@@ -63,14 +63,15 @@ describe("POST /api/analyze", () => {
   });
 
   it("returns a summary when the model answers", async () => {
-    fetchSpy.mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          choices: [{ message: { content: '{"summary":"A website build for a home goods seller."}' } }],
-        }),
-        { status: 200 },
-      ),
-    );
+    // One reply per call, chosen by the schema the request asks for.
+    fetchSpy.mockImplementation(async (_url: string, init: RequestInit) => {
+      const name = JSON.parse(String(init.body)).response_format.json_schema.name;
+      const content =
+        name === "document_summary"
+          ? '{"summary":"A website build for a home goods seller."}'
+          : '{"flags":[]}';
+      return new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 });
+    });
     const res = await POST(json({ documentText: adhesion.text, redLines: [] }));
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
@@ -83,13 +84,14 @@ describe("POST /api/analyze", () => {
   });
 
   it("maps a provider failure to 502 without leaking the provider's message or the key", async () => {
-    fetchSpy.mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          error: { code: 404, message: `No endpoints found (key ${KEY})`, metadata: { provider_name: "Fireworks" } },
-        }),
-        { status: 404 },
-      ),
+    fetchSpy.mockImplementation(
+      async () =>
+        new Response(
+          JSON.stringify({
+            error: { code: 404, message: `No endpoints found (key ${KEY})`, metadata: { provider_name: "Fireworks" } },
+          }),
+          { status: 404 },
+        ),
     );
     const res = await POST(json({ documentText: adhesion.text }));
     expect(res.status).toBe(502);
@@ -99,8 +101,11 @@ describe("POST /api/analyze", () => {
   });
 
   it("maps malformed model output to 502", async () => {
-    fetchSpy.mockResolvedValue(
-      new Response(JSON.stringify({ choices: [{ message: { content: '{"summary":""}' } }] }), { status: 200 }),
+    fetchSpy.mockImplementation(
+      async () =>
+        new Response(JSON.stringify({ choices: [{ message: { content: '{"summary":""}' } }] }), {
+          status: 200,
+        }),
     );
     expect((await POST(json({ documentText: adhesion.text }))).status).toBe(502);
   });

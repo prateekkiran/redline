@@ -19,3 +19,15 @@ export function documentLines(text: string): DocumentLine[] {
   }
   return out;
 }
+
+/**
+ * The number of the line that holds character `offset`, or null when the
+ * offset falls on a blank line or outside the text.
+ */
+export function lineNumberAt(lines: DocumentLine[], offset: number): number | null {
+  for (const line of lines) {
+    if (line.kind !== "text") continue;
+    if (offset >= line.start && offset < line.start + line.text.length + 1) return line.number;
+  }
+  return null;
+}

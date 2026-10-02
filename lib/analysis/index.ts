@@ -6,15 +6,25 @@
 
 import { checkDocumentText, MAX_DOCUMENT_CHARS } from "./limits";
 import { createOpenRouterClient, ModelCallError, type ModelClient } from "./openrouter";
-import { SUMMARY_SCHEMA, SUMMARY_SCHEMA_NAME, SUMMARY_SYSTEM, summaryUserMessage } from "./prompts";
+import { buildFlags, readCandidateList, type FlagDiagnostics } from "./flags";
+import {
+  FLAGS_SCHEMA,
+  FLAGS_SCHEMA_NAME,
+  FLAGS_SYSTEM,
+  flagsUserMessage,
+  SUMMARY_SCHEMA,
+  SUMMARY_SCHEMA_NAME,
+  SUMMARY_SYSTEM,
+  summaryUserMessage,
+} from "./prompts";
 
 export { MAX_DOCUMENT_CHARS, ModelCallError };
-export type { ModelClient };
+export type { FlagDiagnostics, ModelClient };
 
 /**
  * One finding tied to exactly one clause and one cited source sentence
- * (ADR 0001). Ticket 03 starts producing these; the shape is fixed here so
- * later tickets extend it rather than redefine it.
+ * (ADR 0001). The shape is fixed here so later tickets extend it rather
+ * than redefine it.
  */
 export type Flag = {
   /** Verbatim substring of the document text. */
@@ -52,7 +62,15 @@ export class AnalysisOutputError extends Error {
   }
 }
 
-export type AnalyzeDeps = { client?: ModelClient };
+export type AnalyzeDeps = {
+  client?: ModelClient;
+  /**
+   * Called once per analysis with how many candidate flags the model
+   * proposed and why any were dropped. For scripts and logs; never shown
+   * to the reader, and not part of the result.
+   */
+  onDiagnostics?: (diagnostics: FlagDiagnostics) => void;
+};
 
 export async function analyzeDocument(
   documentText: string,
@@ -69,12 +87,47 @@ export async function analyzeDocument(
       `The document is ${documentText.length.toLocaleString("en-US")} characters; the limit is ${MAX_DOCUMENT_CHARS.toLocaleString("en-US")}.`,
     );
   }
-  // Red lines only add flags (ADR 0006); flags arrive in ticket 03.
+  // Red lines only add flags (ADR 0006); ticket 09 wires them in.
   void redLines;
 
   const client = deps.client ?? createOpenRouterClient();
-  const summary = await summarize(client, documentText);
-  return { summary, flags: [] };
+  // Two independent calls, run side by side: the summary describes without
+  // judging, the flags call judges. Separate prompts keep each one honest
+  // and let ticket 04 tune flag detection without touching the summary.
+  const [summary, found] = await Promise.all([
+    summarize(client, documentText),
+    detectFlags(client, documentText),
+  ]);
+  deps.onDiagnostics?.(found.diagnostics);
+  return { summary, flags: found.flags };
+}
+
+async function detectFlags(
+  client: ModelClient,
+  documentText: string,
+): Promise<{ flags: Flag[]; diagnostics: FlagDiagnostics }> {
+  const out = await client.completeJson<unknown>({
+    system: FLAGS_SYSTEM,
+    user: flagsUserMessage(documentText),
+    schemaName: FLAGS_SCHEMA_NAME,
+    schema: FLAGS_SCHEMA,
+  });
+  const candidates = readCandidateList(out);
+  if (!candidates) {
+    throw new AnalysisOutputError("The model's flag list was missing.");
+  }
+  const { flags, diagnostics } = buildFlags(documentText, candidates);
+  return {
+    flags: flags.map((f) => ({
+      sourceSentence: f.sourceSentence,
+      severity: f.severity,
+      description: f.description,
+      counterOffer: f.counterOffer,
+      category: f.category,
+      origin: "baseline",
+    })),
+    diagnostics,
+  };
 }
 
 async function summarize(client: ModelClient, documentText: string): Promise<string> {

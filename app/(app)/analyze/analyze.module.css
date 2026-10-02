@@ -168,6 +168,7 @@
 /* Edition grid: the numbered document on the left, the outer margin on the
    right where flags will hang as glosses. */
 .edition {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, calc(48px + 40px + 600px)) minmax(260px, 1fr);
   column-gap: 40px;
@@ -207,6 +208,131 @@
 
 .margin {
   grid-column: 2;
+  position: relative;
+}
+
+.flagsLede {
+  margin-top: 10px;
+  max-width: 36em;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+/* Cited sentences: faded underline at rest, rubric while their gloss is read. */
+.cited {
+  text-decoration: underline 1px var(--ink-muted);
+  text-underline-offset: 0.24em;
+  transition: color 160ms linear, text-decoration-color 160ms linear;
+}
+
+.citedActive {
+  color: var(--rubric);
+  text-decoration-color: var(--rubric);
+  text-decoration-thickness: 2px;
+}
+
+/* Glosses: rank numeral, line reference, the quoted sentence, the reading. */
+.gloss {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 10px;
+  cursor: pointer;
+}
+
+.gloss:focus-visible {
+  outline: 2px solid var(--rubric);
+  outline-offset: 6px;
+}
+
+.rank {
+  align-self: start;
+  font-size: 34px;
+  line-height: 0.9;
+  font-variant-numeric: lining-nums;
+  color: var(--ink);
+  transition: color 160ms linear;
+}
+
+.ref {
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--ink-muted);
+}
+
+.lemma {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.32;
+  color: var(--ink-muted);
+}
+
+.bracket {
+  color: var(--ink-muted);
+  transition: color 160ms linear;
+}
+
+.reading {
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.glossActive .rank,
+.glossActive .bracket {
+  color: var(--rubric);
+}
+
+/* Without script, margin glosses stack in rank order with hairlines. */
+.hungGloss {
+  padding: 2px 0 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hungGloss:last-child {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+/* With script, Result.tsx hangs each gloss level with its sentence. */
+.margin[data-hung] .hungGloss {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.foldedGlosses {
+  display: none;
+}
+
+.leader {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.leader path {
+  fill: none;
+  stroke: var(--rubric);
+  stroke-width: 1;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: rule 520ms linear forwards;
+}
+
+@keyframes rule {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .footer {
@@ -238,8 +364,25 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .margin {
-    grid-column: 1;
+  /* The margin folds in: each gloss sits beneath the line its sentence ends on. */
+  .margin,
+  .leader {
+    display: none;
+  }
+
+  .foldedGlosses {
+    display: block;
+    grid-column: 2;
+    margin: 12px 0 10px;
+  }
+
+  .inlineGloss {
+    padding: 14px 0 16px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .inlineGloss:last-child {
+    border-bottom: 1px solid var(--rule);
   }
 
   .line {
@@ -260,7 +403,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .action,
-  .fileAction {
+  .fileAction,
+  .cited,
+  .rank,
+  .bracket {
     transition: none;
+  }
+
+  .leader path {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }

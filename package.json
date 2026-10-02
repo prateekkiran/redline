@@ -8,7 +8,8 @@
     "start": "next start",
     "test": "vitest run",
     "test:live": "vitest run --mode live",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

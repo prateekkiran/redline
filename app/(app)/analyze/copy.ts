@@ -34,4 +34,15 @@ export const copy = {
   pasted: "Pasted text",
   reset: "Read another document",
   footer: "Redline isn’t a lawyer, and nothing here is legal advice.",
+  flags: {
+    lede: (n: number) =>
+      n === 1
+        ? "This document has one flag. It quotes the sentence it’s about."
+        : `This document has ${n} flags. They’re ranked by how far each clause reaches past the deal, and each one quotes the sentence it’s about.`,
+    line: (n: number) => `Line ${n}`,
+    lines: (a: number, b: number) => `Lines ${a} to ${b}`,
+    label: (rank: number, total: number, where: string) =>
+      `Flag ${rank} of ${total}, ${where.toLowerCase()}`,
+    marginLabel: "Flags, in ranked order",
+  },
 };

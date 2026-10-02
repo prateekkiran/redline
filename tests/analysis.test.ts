@@ -22,10 +22,13 @@ describe("analyzeDocument summary", () => {
     });
   }
 
-  it("makes exactly one model call for the summary", async () => {
+  it("makes one model call for the summary and one for the flags", async () => {
     const client = createStubModel(adhesion);
     await analyzeDocument(adhesion.text, [], { client });
-    expect(client.calls).toHaveLength(1);
+    expect(client.calls.map((c) => c.schemaName).sort()).toEqual([
+      "document_flags",
+      "document_summary",
+    ]);
   });
 
   it("sends the document text to the model", async () => {
@@ -38,7 +41,7 @@ describe("analyzeDocument summary", () => {
     const client = createStubModel(clean);
     const result = await analyzeDocument(clean.text, ["No non-competes"], { client });
     expect(result.summary.length).toBeGreaterThan(0);
-    expect(client.calls).toHaveLength(1);
+    expect(client.calls).toHaveLength(2);
   });
 
   it("trims whitespace around the model's summary", async () => {

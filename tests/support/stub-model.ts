@@ -9,7 +9,11 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { CompleteJsonArgs, ModelClient } from "@/lib/analysis/openrouter";
-import { SUMMARY_SCHEMA_NAME } from "@/lib/analysis/prompts";
+import {
+  FLAGS_SCHEMA_NAME,
+  SUMMARY_SCHEMA_NAME,
+  type OverreachKind,
+} from "@/lib/analysis/prompts";
 
 export const FIXTURES = path.resolve(import.meta.dirname, "../fixtures");
 
@@ -56,6 +60,13 @@ export type StubModel = ModelClient & { calls: StubCall[] };
 export type StubOptions = {
   /** Replace the reply for a schema, e.g. to return a malformed payload. */
   override?: Partial<Record<string, (args: CompleteJsonArgs) => unknown>>;
+  /**
+   * Extra candidate flags appended after the sidecar's, in the model's
+   * structured shape (or deliberately not, to test malformed candidates).
+   */
+  extraCandidates?: unknown[];
+  /** Use these candidates instead of the sidecar's. */
+  candidates?: unknown[];
 };
 
 export function createStubModel(fixture: Fixture, options: StubOptions = {}): StubModel {
@@ -69,6 +80,13 @@ export function createStubModel(fixture: Fixture, options: StubOptions = {}): St
       switch (args.schemaName) {
         case SUMMARY_SCHEMA_NAME:
           return { summary: summaryFromSidecar(fixture) } as T;
+        case FLAGS_SCHEMA_NAME:
+          return {
+            flags: [
+              ...(options.candidates ?? candidatesFromSidecar(fixture)),
+              ...(options.extraCandidates ?? []),
+            ],
+          } as T;
         default:
           throw new Error(`Stub model has no reply for schema "${args.schemaName}"`);
       }
@@ -92,4 +110,40 @@ function summaryFromSidecar({ text, sidecar }: Fixture): string {
 function firstSentence(text: string): string {
   const m = text.match(/^.*?[.!?](?=\s|$)/);
   return (m ? m[0] : text).trim();
+}
+
+/**
+ * The overreach assessment the stub reports for each sidecar band. The
+ * sidecar records a band, not the model's per-kind assessment, so each band
+ * maps to one fixed assessment: "severe" reaches past the deal in several
+ * ways, "moderate" in one, anything else not at all.
+ */
+const BAND_ASSESSMENT: Record<string, { reachesBeyondDeal: boolean; reaches: OverreachKind[] }> = {
+  severe: {
+    reachesBeyondDeal: true,
+    reaches: ["work_outside_this_deal", "before_or_after_the_term", "one_sided"],
+  },
+  moderate: { reachesBeyondDeal: true, reaches: ["before_or_after_the_term"] },
+};
+
+/** A candidate flag in the model's structured shape (FLAGS_SCHEMA). */
+export type StubCandidate = {
+  category: string;
+  sourceSentence: string;
+  overreach: string;
+  reachesBeyondDeal: boolean;
+  reaches: OverreachKind[];
+  description: string;
+  counterOffer: string;
+};
+
+export function candidatesFromSidecar({ sidecar }: Fixture): StubCandidate[] {
+  return sidecar.flags.map((f) => ({
+    category: f.category,
+    sourceSentence: f.sentence,
+    overreach: f.overreach,
+    ...(BAND_ASSESSMENT[f.severityBand] ?? { reachesBeyondDeal: false, reaches: [] }),
+    description: f.description,
+    counterOffer: f.counterOffer,
+  }));
 }

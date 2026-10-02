@@ -8,7 +8,7 @@ import {
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
-// One model call per document; give a slow provider room to answer.
+// Two model calls per document, run in parallel; give a slow provider room to answer.
 export const maxDuration = 60;
 
 /**
