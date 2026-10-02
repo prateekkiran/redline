@@ -1,0 +1,99 @@
+{
+  "document": "adhesion-contract.txt",
+  "flags": [
+    {
+      "id": "ip-assignment",
+      "category": "ip_assignment",
+      "sentence": "Contractor further assigns to Client all right, title and interest in any work, design, code, idea or invention that Contractor creates during the term of this Agreement and for one year after it ends, whether or not created for Client, together with all templates, code libraries, tools and methods Contractor used in performing the Services, including those Contractor owned before the start date.",
+      "severityBand": "severe",
+      "overreach": "It takes ownership of work made for other clients, work made up to a year after the deal ends, and the tools Contractor owned before the deal started.",
+      "description": "This clause hands Client everything you make during the twelve-month term and for a year afterward, even work you do for other clients, plus the templates, code libraries and methods you brought with you. Signing it means you can no longer use your own toolkit on other jobs.",
+      "counterOffer": "Replace Section 6.2 with: \"Contractor assigns to Client only the final Deliverables described in Section 1, upon payment in full. Contractor keeps all rights in work created for other clients or outside the Services, and in all templates, code libraries, tools and methods Contractor owned before the start date or developed independently, and grants Client a non-exclusive, perpetual license to use any of them only as embedded in the final Deliverables.\""
+    },
+    {
+      "id": "arbitration",
+      "category": "arbitration",
+      "sentence": "Any and all claims, disputes or controversies between Contractor and Client or any of its affiliates, however arising, whether under this Agreement, any other agreement, in tort, by statute or otherwise, and whether arising before, during or after the term of this Agreement, will be resolved exclusively by binding individual arbitration in Wilmington, Delaware.",
+      "severityBand": "severe",
+      "overreach": "It forces arbitration of any claim against Client or its affiliates, however arising and under any agreement, not only disputes about this website project.",
+      "description": "This clause sends every possible claim you could ever have against Client or any of its affiliates to private arbitration in Wilmington, Delaware, including claims that have nothing to do with this project and claims that arise after the contract ends. You give up going to court for all of them.",
+      "counterOffer": "Replace Section 10.1 with: \"Any dispute arising under this Agreement about payment for or performance of the Services will be resolved by binding arbitration in the county where Contractor resides, or by either party in small claims court. Claims unrelated to this Agreement, and claims against Client's affiliates, are not covered by this Section.\""
+    },
+    {
+      "id": "non-compete",
+      "category": "non_compete",
+      "sentence": "During the term of this Agreement and for twelve months after it ends, Contractor will not provide design or development services to any business that sells home goods online.",
+      "severityBand": "moderate",
+      "overreach": "It bars Contractor from a whole category of clients for a year after a single website project ends.",
+      "description": "This clause stops you from doing design or development work for any online home goods seller while the contract runs and for twelve months after it ends. One fixed-fee website job shuts you out of that whole market for a year.",
+      "counterOffer": "Replace Section 7.1 with: \"While the Deliverables are in progress, Contractor will not use Client's confidential information for any other client.\" Delete the twelve-month post-term restriction and the ban on serving businesses that sell home goods online."
+    },
+    {
+      "id": "auto-renewal",
+      "category": "auto_renewal",
+      "sentence": "At the end of the initial term and each renewal term, this Agreement renews automatically for another twelve-month term unless Contractor sends written notice of non-renewal by certified mail to Client's registered agent no earlier than 120 days and no later than 90 days before the current term ends.",
+      "severityBand": "severe",
+      "overreach": "It locks Contractor into repeated twelve-month maintenance terms that only a certified letter sent inside a 30-day window can stop.",
+      "description": "This clause renews the contract for another full year, with you owing monthly maintenance at $800, unless you mail a certified letter to Client's registered agent inside one 30-day window. Miss that window by a day and you are bound for another twelve months.",
+      "counterOffer": "Replace Section 4.3 with: \"This Agreement ends at the end of the initial term unless both parties agree in writing to renew it. Any renewal term may be ended by either party on 30 days' written notice sent by email.\""
+    },
+    {
+      "id": "termination-for-convenience",
+      "category": "termination_for_convenience",
+      "sentence": "Client may terminate this Agreement at any time, for any reason or no reason, effective immediately on written notice, and in that case Client owes no fees for any Services performed or Deliverables delivered before the termination date, including work in progress.",
+      "severityBand": "severe",
+      "overreach": "It lets Client walk away at any moment without paying for work Contractor has already done and delivered.",
+      "description": "This clause lets Client end the contract whenever it likes, with no notice period, and pay nothing for the work you have already done or delivered. Contractor has no matching right and can leave only after a 60-day cure period for a material breach.",
+      "counterOffer": "Replace Section 4.4 with: \"Either party may terminate this Agreement for convenience on 14 days' written notice. On any termination, Client will pay Contractor for all Services performed and Deliverables delivered up to the termination date, prorated against the fixed fee, and the deposit is non-refundable.\""
+    },
+    {
+      "id": "indemnity",
+      "category": "liability_indemnity",
+      "sentence": "Contractor will indemnify, defend and hold harmless Client and its affiliates, officers, employees and customers from and against any and all claims, losses, damages, fines and legal fees of any kind arising out of or relating in any way to this Agreement or Client's business, without limit as to amount and regardless of whether Contractor was at fault.",
+      "severityBand": "severe",
+      "overreach": "It makes Contractor pay, without any cap, for claims about Client's whole business, even where Contractor did nothing wrong.",
+      "description": "This clause makes you cover every claim, fine and legal bill connected to this contract or to Client's business as a whole, with no dollar limit and even when you were not at fault. Client gives you no indemnity in return.",
+      "counterOffer": "Replace Section 9.1 with: \"Each party will indemnify the other against third-party claims to the extent caused by its own breach of this Agreement or its own negligence. Each party's total liability under this Agreement is limited to the fees paid or payable under this Agreement, except for unpaid fees owed to Contractor.\""
+    }
+  ],
+  "notFlagged": [
+    "Contractor will design and build a responsive marketing website for Client's spring product launch, consisting of a home page, four product pages, a contact page and a checkout landing page (the \"Deliverables\").",
+    "Client will pay 40 percent of the fee when this Agreement is signed and the remaining 60 percent when Client accepts the final Deliverables.",
+    "Contractor will send invoices by email, and Client will pay each undisputed invoice within 30 days of receiving it.",
+    "Contractor will keep confidential any non-public information that Client shares for this project, including unreleased product details and pricing, and will use that information only to perform the Services.",
+    "Contractor's confidentiality obligations end two years after Client accepts the final Deliverables.",
+    "Upon payment in full, Contractor assigns to Client all rights in the final Deliverables that Contractor creates for Client under this Agreement.",
+    "Contractor will fix any defect in the Deliverables that Client reports within 30 days after acceptance at no additional charge.",
+    "If any provision of this Agreement is found unenforceable, the remaining provisions stay in effect."
+  ],
+  "questions": {
+    "answerable": [
+      {
+        "question": "When is the rest of the fee paid?",
+        "answer": "Client pays the remaining 60 percent when it accepts the final Deliverables.",
+        "supportingSentence": "Client will pay 40 percent of the fee when this Agreement is signed and the remaining 60 percent when Client accepts the final Deliverables."
+      },
+      {
+        "question": "How long does the client have to pay an invoice?",
+        "answer": "Client pays each undisputed invoice within 30 days of receiving it.",
+        "supportingSentence": "Contractor will send invoices by email, and Client will pay each undisputed invoice within 30 days of receiving it."
+      },
+      {
+        "question": "How many rounds of revisions are included?",
+        "answer": "Up to two rounds of revisions on each page, at no additional charge.",
+        "supportingSentence": "Contractor will make up to two rounds of revisions on each page at no additional charge."
+      },
+      {
+        "question": "How long do I have to keep the client's information confidential?",
+        "answer": "Until two years after Client accepts the final Deliverables.",
+        "supportingSentence": "Contractor's confidentiality obligations end two years after Client accepts the final Deliverables."
+      }
+    ],
+    "unanswerable": [
+      "Does the client owe interest on late payments?",
+      "Can I hire a subcontractor to help with the work?",
+      "Who owns the website's domain name?",
+      "Who pays for web hosting once the site is live?"
+    ]
+  }
+}

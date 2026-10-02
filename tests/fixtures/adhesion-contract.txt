@@ -1,0 +1,96 @@
+FREELANCE SERVICES AGREEMENT
+
+This Freelance Services Agreement (the "Agreement") is made on March 3, 2026 between Brightwater Home Goods LLC, a Delaware limited liability company ("Client"), and the individual named on the signature page ("Contractor").
+
+Client offers this Agreement on its standard form and does not accept changes to its terms. By signing, Contractor accepts every term below as written.
+
+Section 1 - Services and Deliverables
+
+1.1 Contractor will design and build a responsive marketing website for Client's spring product launch, consisting of a home page, four product pages, a contact page and a checkout landing page (the "Deliverables").
+1.2 Contractor will deliver a first draft of the Deliverables by April 14, 2026 and the final files by May 1, 2026.
+1.3 Client will provide its brand guidelines, product copy and product photography within five business days of the start date.
+1.4 Contractor will make up to two rounds of revisions on each page at no additional charge.
+1.5 Revisions beyond the second round are billed at $85 per hour, and Contractor will tell Client the expected hours before starting that work.
+1.6 Contractor decides the methods, tools and working hours used to perform the services described in this Section 1 (the "Services").
+1.7 Contractor is an independent contractor and not an employee, partner or agent of Client.
+
+Section 2 - Fees and Payment
+
+2.1 Client will pay Contractor a fixed fee of $9,600 for the Services.
+2.2 Client will pay 40 percent of the fee when this Agreement is signed and the remaining 60 percent when Client accepts the final Deliverables.
+2.3 Contractor will send invoices by email, and Client will pay each undisputed invoice within 30 days of receiving it.
+2.4 If Client disputes part of an invoice, Client will tell Contractor which items it disputes and why within ten days of receiving the invoice, and will pay the undisputed amount on time.
+2.5 Client will reimburse expenses that it approved in writing in advance, within 30 days of receiving the receipts.
+2.6 Contractor is responsible for all taxes on amounts paid under this Agreement.
+
+Section 3 - Review and Acceptance
+
+3.1 Client will review each Deliverable within ten business days of delivery and either accept it or send a written list of the specific changes needed to meet the description in Section 1.
+3.2 A Deliverable that Client does not reject in writing within that period is treated as accepted.
+3.3 Client will name one project contact who is authorized to give feedback and approve Deliverables on its behalf.
+
+Section 4 - Term, Renewal and Termination
+
+4.1 This Agreement begins on the date it is signed and runs for an initial term of twelve months.
+4.2 During any renewal term, Contractor will provide website maintenance for the Deliverables for a monthly retainer of $800.
+4.3 At the end of the initial term and each renewal term, this Agreement renews automatically for another twelve-month term unless Contractor sends written notice of non-renewal by certified mail to Client's registered agent no earlier than 120 days and no later than 90 days before the current term ends.
+4.4 Client may terminate this Agreement at any time, for any reason or no reason, effective immediately on written notice, and in that case Client owes no fees for any Services performed or Deliverables delivered before the termination date, including work in progress.
+4.5 Contractor may terminate this Agreement only if Client commits a material breach and fails to cure it within 60 days after receiving written notice from Contractor.
+
+Section 5 - Confidentiality
+
+5.1 Contractor will keep confidential any non-public information that Client shares for this project, including unreleased product details and pricing, and will use that information only to perform the Services.
+5.2 These confidentiality obligations do not apply to information that is already public, that Contractor knew before receiving it from Client, or that Contractor lawfully receives from someone else.
+5.3 Contractor's confidentiality obligations end two years after Client accepts the final Deliverables.
+5.4 When the project ends, Contractor will return or delete Client's confidential information at Client's request.
+
+Section 6 - Intellectual Property
+
+6.1 Upon payment in full, Contractor assigns to Client all rights in the final Deliverables that Contractor creates for Client under this Agreement.
+6.2 Contractor further assigns to Client all right, title and interest in any work, design, code, idea or invention that Contractor creates during the term of this Agreement and for one year after it ends, whether or not created for Client, together with all templates, code libraries, tools and methods Contractor used in performing the Services, including those Contractor owned before the start date.
+6.3 Client keeps all rights in the logos, trademarks, product photography and copy that it provides to Contractor.
+6.4 Contractor will sign any document Client reasonably requests to record the transfers in this Section 6.
+
+Section 7 - Restrictions on Other Work
+
+7.1 During the term of this Agreement and for twelve months after it ends, Contractor will not provide design or development services to any business that sells home goods online.
+7.2 During the term of this Agreement, Contractor will not solicit any Client employee to leave Client.
+
+Section 8 - Standards of Work
+
+8.1 Contractor will perform the Services in a professional and workmanlike manner consistent with generally accepted industry standards.
+8.2 The Deliverables will display correctly on the current versions of the major desktop and mobile web browsers at the time of delivery.
+8.3 Contractor will fix any defect in the Deliverables that Client reports within 30 days after acceptance at no additional charge.
+8.4 Contractor will attend one video call each week with Client's project contact while the Deliverables are in progress.
+
+Section 9 - Indemnity and Liability
+
+9.1 Contractor will indemnify, defend and hold harmless Client and its affiliates, officers, employees and customers from and against any and all claims, losses, damages, fines and legal fees of any kind arising out of or relating in any way to this Agreement or Client's business, without limit as to amount and regardless of whether Contractor was at fault.
+9.2 Contractor will notify Client within five business days if Contractor becomes aware of any claim relating to the Deliverables.
+
+Section 10 - Dispute Resolution
+
+10.1 Any and all claims, disputes or controversies between Contractor and Client or any of its affiliates, however arising, whether under this Agreement, any other agreement, in tort, by statute or otherwise, and whether arising before, during or after the term of this Agreement, will be resolved exclusively by binding individual arbitration in Wilmington, Delaware.
+10.2 Contractor waives any right to a jury trial and any right to bring or join a class action against Client.
+
+Section 11 - General Terms
+
+11.1 This Agreement is the entire agreement between the parties about the Services and replaces any earlier proposals or discussions.
+11.2 Except where this Agreement requires another method, notices under this Agreement must be in writing and sent by email to the addresses on the signature page.
+11.3 If any provision of this Agreement is found unenforceable, the remaining provisions stay in effect.
+11.4 Contractor may not assign this Agreement to anyone else without Client's written consent.
+11.5 The headings in this Agreement are for convenience only and do not change its meaning.
+
+SIGNATURES
+
+Brightwater Home Goods LLC
+By: ______________________
+Name: Dana Whitcomb
+Title: Director of Marketing
+Email: legal@brightwater-example.com
+
+Contractor
+Signature: ______________________
+Name: ______________________
+Email: ______________________
+Date: ______________________
