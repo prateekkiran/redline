@@ -12,8 +12,8 @@ import type { CompleteJsonArgs, ModelClient } from "@/lib/analysis/openrouter";
 import {
   FLAGS_SCHEMA_NAME,
   SUMMARY_SCHEMA_NAME,
-  type OverreachKind,
 } from "@/lib/analysis/prompts";
+import { NO_REACH, type OverreachAssessment } from "@/lib/analysis/severity";
 
 export const FIXTURES = path.resolve(import.meta.dirname, "../fixtures");
 
@@ -114,16 +114,16 @@ function firstSentence(text: string): string {
 
 /**
  * The overreach assessment the stub reports for each sidecar band. The
- * sidecar records a band, not the model's per-kind assessment, so each band
- * maps to one fixed assessment: "severe" reaches past the deal in several
- * ways, "moderate" in one, anything else not at all.
+ * sidecar records a band, not the model's per-dimension assessment, so each
+ * band maps to one fixed assessment: "severe" reaches far on several
+ * dimensions, "moderate" a bounded distance on two, and "within-deal" not at
+ * all (a clause a recall-leaning model proposes but that stays inside the
+ * deal; the pipeline drops it).
  */
-const BAND_ASSESSMENT: Record<string, { reachesBeyondDeal: boolean; reaches: OverreachKind[] }> = {
-  severe: {
-    reachesBeyondDeal: true,
-    reaches: ["work_outside_this_deal", "before_or_after_the_term", "one_sided"],
-  },
-  moderate: { reachesBeyondDeal: true, reaches: ["before_or_after_the_term"] },
+export const BAND_ASSESSMENT: Record<string, OverreachAssessment> = {
+  severe: { ...NO_REACH, time: "far", subject: "far", others: "some", oneSided: "far" },
+  moderate: { ...NO_REACH, time: "some", others: "some" },
+  "within-deal": { ...NO_REACH },
 };
 
 /** A candidate flag in the model's structured shape (FLAGS_SCHEMA). */
@@ -131,19 +131,22 @@ export type StubCandidate = {
   category: string;
   sourceSentence: string;
   overreach: string;
-  reachesBeyondDeal: boolean;
-  reaches: OverreachKind[];
+  reach: OverreachAssessment;
   description: string;
   counterOffer: string;
 };
 
-export function candidatesFromSidecar({ sidecar }: Fixture): StubCandidate[] {
-  return sidecar.flags.map((f) => ({
-    category: f.category,
-    sourceSentence: f.sentence,
-    overreach: f.overreach,
-    ...(BAND_ASSESSMENT[f.severityBand] ?? { reachesBeyondDeal: false, reaches: [] }),
-    description: f.description,
-    counterOffer: f.counterOffer,
-  }));
+export function candidatesFromSidecar({ name, sidecar }: Fixture): StubCandidate[] {
+  return sidecar.flags.map((f) => {
+    const reach = BAND_ASSESSMENT[f.severityBand];
+    if (!reach) throw new Error(`Fixture ${name}: unknown severityBand "${f.severityBand}"`);
+    return {
+      category: f.category,
+      sourceSentence: f.sentence,
+      overreach: f.overreach,
+      reach: { ...reach },
+      description: f.description,
+      counterOffer: f.counterOffer,
+    };
+  });
 }

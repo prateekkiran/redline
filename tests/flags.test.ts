@@ -5,6 +5,7 @@ import {
   type FlagDiagnostics,
 } from "@/lib/analysis";
 import { MIN_SENTENCE_CHARS } from "@/lib/analysis/citations";
+import { NO_REACH } from "@/lib/analysis/severity";
 import {
   candidatesFromSidecar,
   createStubModel,
@@ -37,8 +38,7 @@ function candidate(over: Partial<StubCandidate> & { sourceSentence: string }): S
   return {
     category: "ip_assignment",
     overreach: "It reaches past the deal.",
-    reachesBeyondDeal: true,
-    reaches: ["work_outside_this_deal"],
+    reach: { ...NO_REACH, subject: "some" },
     description: "This clause takes more than the deal needs.",
     counterOffer: "Limit this clause to the Deliverables.",
     ...over,
@@ -219,16 +219,16 @@ describe("ranking", () => {
     const ip = byId("ip-assignment").sentence;
     const { result } = await run(adhesion, {
       candidates: [
-        candidate({ sourceSentence: ip, reachesBeyondDeal: false, reaches: [] }),
+        candidate({ sourceSentence: ip, reach: { ...NO_REACH, ownAssets: "some" } }),
         candidate({
           sourceSentence: arbitration,
           category: "arbitration",
-          reaches: ["unrelated_claims"],
+          reach: { ...NO_REACH, subject: "far" },
         }),
         candidate({
           sourceSentence: indemnity,
           category: "liability_indemnity",
-          reaches: ["no_limit_on_amount", "regardless_of_fault", "affiliates_or_third_parties"],
+          reach: { ...NO_REACH, exposure: "far", others: "some", oneSided: "far" },
         }),
       ],
     });
@@ -244,7 +244,11 @@ describe("ranking", () => {
 describe("de-duplication", () => {
   it("collapses two candidates citing the same sentence in the same category, keeping the more severe", async () => {
     const ip = planted.find((c) => c.category === "ip_assignment")!;
-    const weaker = { ...ip, reaches: [], description: "A weaker reading of the same clause." };
+    const weaker = {
+      ...ip,
+      reach: { ...NO_REACH, time: "some" as const },
+      description: "A weaker reading of the same clause.",
+    };
     const { result, diagnostics } = await run(adhesion, {
       candidates: [weaker, ip],
     });

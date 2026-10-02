@@ -1,0 +1,23 @@
+{
+  "document": "arbitration-broad.txt",
+  "pair": "arbitration-narrow",
+  "flags": [
+    {
+      "id": "arbitration",
+      "category": "arbitration",
+      "sentence": "Any and all claims, disputes or controversies between Writer and Client or any of Client's affiliates, however arising, whether under this Agreement, any other agreement, in tort, by statute or otherwise, and whether arising before, during or after the term of this Agreement, will be resolved by binding individual arbitration in a location Client chooses.",
+      "severityBand": "severe",
+      "overreach": "It forces arbitration of any claim against Client or its affiliates, under any agreement or none, before, during or after the job.",
+      "description": "This clause sends every claim you could ever have against Client or any of its affiliates to private arbitration in a place Client picks, including claims that have nothing to do with this copywriting job. You give up going to court for all of them.",
+      "counterOffer": "Replace Section 8.1 with: \"Any dispute between Client and Writer about payment for or performance of the work under this Agreement will be resolved by binding arbitration in the county where Writer lives. Claims unrelated to this Agreement, and claims involving Client's affiliates, are not covered by this Section.\""
+    }
+  ],
+  "notFlagged": [
+    "Once Client has paid the full fee, Writer assigns to Client the copyright in the final Copy.",
+    "Either party may end this Agreement for any reason on ten days' written notice by email.",
+    "Writer is free to write for other clients, including other dental practices, during and after this Agreement.",
+    "Each party's total liability under this Agreement is limited to the fee paid or payable under it.",
+    "This Agreement does not renew."
+  ],
+  "notes": "Identical to arbitration-narrow.txt except Section 8.1, which reaches any and all claims however arising, including against Client's affiliates. Every other sensitive clause is scoped to the job."
+}

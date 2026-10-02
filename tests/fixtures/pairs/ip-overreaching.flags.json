@@ -1,0 +1,23 @@
+{
+  "document": "ip-overreaching.txt",
+  "pair": "ip-in-scope",
+  "flags": [
+    {
+      "id": "ip-assignment",
+      "category": "ip_assignment",
+      "sentence": "Developer assigns to Client all rights in the App and in any other software, design, code or invention that Developer creates during the term of this Agreement and for two years after it ends, whether or not created for Client, including all code libraries, frameworks and tools Developer used to build the App, even those Developer owned before the start date.",
+      "severityBand": "severe",
+      "overreach": "It takes ownership of work for other clients, work made up to two years after the job ends, and the tools Developer owned before it started.",
+      "description": "This clause hands Client everything you build during the project and for two years after it, even for other clients, plus the code libraries and tools you brought with you. After signing, your own toolkit belongs to Client.",
+      "counterOffer": "Replace Section 4.1 with: \"Upon payment in full, Developer assigns to Client all rights in the App's source code and designs that Developer creates for Client under this Agreement. Developer keeps all rights in work created for other clients and in the code libraries, frameworks and tools Developer owned before the start date or developed independently, and grants Client a permanent, non-exclusive license to use them as part of the App.\" Delete Section 4.2."
+    }
+  ],
+  "notFlagged": [
+    "Either party may end this Agreement for any reason on 14 days' written notice by email.",
+    "Developer is free to build apps for other clients, including other gyms and fitness studios, during and after this Agreement.",
+    "Each party's total liability under this Agreement is limited to the fee paid or payable under it.",
+    "Any dispute arising under this Agreement will be decided by the courts of the county where Developer lives.",
+    "This Agreement does not renew."
+  ],
+  "notes": "Identical to ip-in-scope.txt except Sections 4.1 and 4.2. 4.1 reaches into future work, other clients' work and Developer's pre-existing tools. 4.2 follows from 4.1 and a model can flag it too; the planted flag is 4.1."
+}

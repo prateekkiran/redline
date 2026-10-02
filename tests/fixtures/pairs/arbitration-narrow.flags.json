@@ -1,0 +1,23 @@
+{
+  "document": "arbitration-narrow.txt",
+  "pair": "arbitration-broad",
+  "flags": [
+    {
+      "id": "arbitration",
+      "category": "arbitration",
+      "sentence": "Any dispute between Client and Writer about payment for or performance of the work under this Agreement will be resolved by binding arbitration in the county where Writer lives.",
+      "severityBand": "within-deal",
+      "overreach": "It covers only disputes about payment for or performance of this copywriting job, heard where Writer lives.",
+      "description": "This clause sends disputes about your pay or your work on this website copy to arbitration in your own county. Nothing outside this job is covered.",
+      "counterOffer": "No change needed: the clause is limited to disputes about this Agreement's payment and performance."
+    }
+  ],
+  "notFlagged": [
+    "Once Client has paid the full fee, Writer assigns to Client the copyright in the final Copy.",
+    "Either party may end this Agreement for any reason on ten days' written notice by email.",
+    "Writer is free to write for other clients, including other dental practices, during and after this Agreement.",
+    "Each party's total liability under this Agreement is limited to the fee paid or payable under it.",
+    "This Agreement does not renew."
+  ],
+  "notes": "Identical to arbitration-broad.txt except Section 8.1. The arbitration clause covers only payment and performance disputes under this Agreement, so it stays inside the deal. Every other sensitive clause is scoped to the job, so a correct analysis returns no flags; a recall-leaning model that proposes 8.1 anyway should assess it as reaching nowhere."
+}

@@ -1,0 +1,72 @@
+APP DEVELOPMENT AGREEMENT
+
+This App Development Agreement (the "Agreement") is made on August 17, 2026 between Lantern Fitness Inc. ("Client") and the developer named on the signature page ("Developer").
+
+Section 1 - The Project
+
+1.1 Developer will build an iOS app that lets Client's members book classes, see their class history and get class reminders (the "App").
+1.2 Developer will deliver a test build of the App by October 5, 2026 and the final build and source code by November 2, 2026.
+1.3 Client will give Developer access to its booking system's API, its brand assets and a test account within five business days of signing.
+1.4 The fee includes fixing any bug Client reports before it accepts the final build.
+1.5 Developer decides how, when and where to do the work, and is an independent contractor, not an employee of Client.
+
+Section 2 - Fees and Payment
+
+2.1 Client will pay Developer a fixed fee of $18,000 for the App.
+2.2 Client will pay one third of the fee on signing, one third on delivery of the test build and one third on acceptance of the final build.
+2.3 Developer will invoice by email, and Client will pay each invoice within 15 days of receiving it.
+2.4 Features beyond those in Section 1 are billed at $110 per hour, but only after Client approves an estimate in writing.
+
+Section 3 - Acceptance
+
+3.1 Client will test the final build within ten business days of delivery and either accept it or send a written list of bugs that stop it working as described in Section 1.
+3.2 Developer will fix the listed bugs and redeliver within ten business days.
+
+Section 4 - Ownership
+
+4.1 Upon payment in full, Developer assigns to Client all rights in the App's source code and designs that Developer creates for Client under this Agreement.
+4.2 Developer keeps all rights in the code libraries, frameworks and tools that Developer owned before the start date, and grants Client a permanent, non-exclusive license to use them as part of the App.
+4.3 Client keeps all rights in its logos, brand assets, class data and member data.
+
+Section 5 - Confidentiality
+
+5.1 Each party will keep confidential any non-public information the other shares for this project and use it only for this project.
+5.2 This obligation does not cover information that is public, already known to the receiving party, or lawfully received from someone else.
+
+Section 6 - Term and Termination
+
+6.1 This Agreement begins on signing and ends when Client has accepted and paid for the final build.
+6.2 Either party may end this Agreement for any reason on 14 days' written notice by email.
+6.3 If either party ends this Agreement early, Client will pay Developer for all work done up to the end date, prorated against the fixed fee.
+6.4 This Agreement does not renew.
+
+Section 7 - Other Work
+
+7.1 Developer is free to build apps for other clients, including other gyms and fitness studios, during and after this Agreement.
+
+Section 8 - Liability
+
+8.1 Each party is responsible for claims caused by its own breach of this Agreement or its own negligence.
+8.2 Each party's total liability under this Agreement is limited to the fee paid or payable under it.
+
+Section 9 - Disputes
+
+9.1 Any dispute arising under this Agreement will be decided by the courts of the county where Developer lives.
+
+Section 10 - General Terms
+
+10.1 This Agreement is the entire agreement between the parties about the App.
+10.2 Notices under this Agreement must be in writing and sent by email to the addresses on the signature page.
+10.3 If any provision of this Agreement is found unenforceable, the remaining provisions stay in effect.
+
+SIGNATURES
+
+Lantern Fitness Inc.
+By: ______________________
+Name: Marcus Hale
+Title: Head of Product
+
+Developer
+Signature: ______________________
+Name: ______________________
+Date: ______________________

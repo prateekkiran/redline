@@ -1,25 +1,27 @@
 /**
  * Turning the model's candidate flags into the flags Redline returns:
  * validate each candidate's shape, compute its severity from the overreach
- * assessment (ADR 0003), verify its citation against the document
- * (ADR 0001, ./citations), then rank.
+ * assessment (ADR 0003, ./severity), drop candidates that don't reach past
+ * the deal at all, verify each citation against the document (ADR 0001,
+ * ./citations), then rank.
  */
 
 import { verifyCitations, type CitationDrops } from "./citations";
+import { findHedges } from "./hedges";
+import { FLAG_CATEGORIES, type FlagCategory } from "./prompts";
 import {
-  FLAG_CATEGORIES,
-  OVERREACH_KINDS,
-  type FlagCategory,
-  type OverreachKind,
-} from "./prompts";
+  isOverreach,
+  readAssessment,
+  severityFrom,
+  type OverreachAssessment,
+} from "./severity";
 
 /** A candidate as the model returns it (FLAGS_SCHEMA). */
 export type CandidateFlag = {
   category: FlagCategory;
   sourceSentence: string;
   overreach: string;
-  reachesBeyondDeal: boolean;
-  reaches: OverreachKind[];
+  reach: OverreachAssessment;
   description: string;
   counterOffer: string;
 };
@@ -27,8 +29,18 @@ export type CandidateFlag = {
 export type FlagDiagnostics = CitationDrops & {
   /** Candidates the model proposed. */
   proposed: number;
-  /** Candidates missing a field, with an unknown category, or no description. */
+  /**
+   * Candidates missing a field, with an unknown category, an incomplete
+   * overreach assessment, or no description.
+   */
   malformed: number;
+  /**
+   * Candidates the model itself assessed as reaching past the deal in no
+   * way. Inside the deal by definition, so not flags (ADR 0003, 0005).
+   */
+  withinDeal: number;
+  /** Returned flags whose description contains a hedge word (kept anyway). */
+  hedged: number;
   /** Flags returned after every check. */
   kept: number;
 };
@@ -43,19 +55,7 @@ export type RankedFlag = {
   start: number;
 };
 
-/**
- * Severity as an ordering number, higher = more overreach. A clause that
- * reaches past the deal at all outranks one that doesn't; among those, each
- * distinct way it reaches adds weight. Category plays no part (ADR 0003).
- * Ticket 04 tunes the weights.
- */
-export function severityOf(c: Pick<CandidateFlag, "reachesBeyondDeal" | "reaches">): number {
-  const kinds = new Set(c.reaches).size;
-  return (c.reachesBeyondDeal ? 100 : 0) + 10 * kinds;
-}
-
 const CATEGORY_SET = new Set<string>(FLAG_CATEGORIES);
-const KIND_SET = new Set<string>(OVERREACH_KINDS);
 
 /** The candidate list from the model's reply, or null if the reply has none. */
 export function readCandidateList(payload: unknown): unknown[] | null {
@@ -70,15 +70,13 @@ function readCandidate(raw: unknown): CandidateFlag | null {
   if (typeof c.category !== "string" || !CATEGORY_SET.has(c.category)) return null;
   if (typeof c.sourceSentence !== "string") return null;
   if (typeof c.description !== "string" || c.description.trim() === "") return null;
-  if (typeof c.reachesBeyondDeal !== "boolean") return null;
-  if (!Array.isArray(c.reaches)) return null;
+  const reach = readAssessment(c.reach);
+  if (!reach) return null;
   return {
     category: c.category as FlagCategory,
     sourceSentence: c.sourceSentence,
     overreach: typeof c.overreach === "string" ? c.overreach.trim() : "",
-    reachesBeyondDeal: c.reachesBeyondDeal,
-    // Unknown kinds are ignored rather than counted.
-    reaches: c.reaches.filter((k): k is OverreachKind => typeof k === "string" && KIND_SET.has(k)),
+    reach,
     description: c.description.trim(),
     counterOffer: typeof c.counterOffer === "string" ? c.counterOffer.trim() : "",
   };
@@ -86,13 +84,16 @@ function readCandidate(raw: unknown): CandidateFlag | null {
 
 /**
  * From raw model candidates to ranked, verified flags. Ranked by severity,
- * descending; ties keep document order.
+ * descending; ties keep document order. A candidate with no reach at all is
+ * dropped; anything with even one "some" is kept (borderline clauses are
+ * flagged, ADR 0004). Hedged descriptions are counted, never dropped.
  */
 export function buildFlags(
   documentText: string,
   rawCandidates: unknown[],
 ): { flags: RankedFlag[]; diagnostics: FlagDiagnostics } {
   let malformed = 0;
+  let withinDeal = 0;
   const candidates = [];
   for (const raw of rawCandidates) {
     const c = readCandidate(raw);
@@ -100,7 +101,11 @@ export function buildFlags(
       malformed++;
       continue;
     }
-    candidates.push({ ...c, severity: severityOf(c) });
+    if (!isOverreach(c.reach)) {
+      withinDeal++;
+      continue;
+    }
+    candidates.push({ ...c, severity: severityFrom(c.reach) });
   }
 
   const { kept, dropped } = verifyCitations(documentText, candidates);
@@ -121,7 +126,9 @@ export function buildFlags(
     diagnostics: {
       proposed: rawCandidates.length,
       malformed,
+      withinDeal,
       ...dropped,
+      hedged: flags.filter((f) => findHedges(f.description).length > 0).length,
       kept: flags.length,
     },
   };

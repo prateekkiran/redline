@@ -1,0 +1,24 @@
+{
+  "document": "ip-in-scope.txt",
+  "pair": "ip-overreaching",
+  "flags": [
+    {
+      "id": "ip-assignment",
+      "category": "ip_assignment",
+      "sentence": "Upon payment in full, Developer assigns to Client all rights in the App's source code and designs that Developer creates for Client under this Agreement.",
+      "severityBand": "within-deal",
+      "overreach": "It covers only the App's code and designs made for Client and paid for under this Agreement.",
+      "description": "This clause gives Client the App's code and designs once it has paid you in full. Your own libraries and tools stay yours under the next sentence.",
+      "counterOffer": "No change needed: the assignment is limited to the paid App."
+    }
+  ],
+  "notFlagged": [
+    "Either party may end this Agreement for any reason on 14 days' written notice by email.",
+    "Developer is free to build apps for other clients, including other gyms and fitness studios, during and after this Agreement.",
+    "Each party's total liability under this Agreement is limited to the fee paid or payable under it.",
+    "Any dispute arising under this Agreement will be decided by the courts of the county where Developer lives.",
+    "This Agreement does not renew.",
+    "Developer keeps all rights in the code libraries, frameworks and tools that Developer owned before the start date, and grants Client a permanent, non-exclusive license to use them as part of the App."
+  ],
+  "notes": "Identical to ip-overreaching.txt except Sections 4.1 and 4.2. The assignment covers only the paid App and Developer keeps pre-existing tools, so it stays inside the deal. Every other sensitive clause is scoped to the job, so a correct analysis returns no flags."
+}

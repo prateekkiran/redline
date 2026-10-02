@@ -45,7 +45,8 @@ async function main() {
     console.log(
       `Model proposed ${d.proposed} candidate flags; ${d.kept} survived verification ` +
         `(dropped: ${d.notInDocument} not in document, ${d.tooShort} too short, ` +
-        `${d.duplicate} duplicate, ${d.malformed} malformed).`,
+        `${d.duplicate} duplicate, ${d.malformed} malformed, ${d.withinDeal} inside the deal); ` +
+        `${d.hedged} hedged descriptions.`,
     );
   }
   if (verified !== n) {
