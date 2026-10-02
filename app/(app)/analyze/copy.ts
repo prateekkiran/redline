@@ -45,4 +45,8 @@ export const copy = {
       `Flag ${rank} of ${total}, ${where.toLowerCase()}`,
     marginLabel: "Flags, in ranked order",
   },
+  clean: {
+    note: "No flags. Redline found no clause in this document that reaches past the job.",
+    footnote: "Redline can miss a clause. No flags doesn’t mean the contract is fair, or that you should sign it.",
+  },
 };

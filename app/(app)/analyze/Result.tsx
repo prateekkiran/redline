@@ -40,6 +40,7 @@ export function Result({ documentText, result, source, onReset }: Props) {
     return map;
   }, [marks]);
 
+  const clean = result.flags.length === 0;
   const [active, setActive] = useState<number | null>(marks.length ? 1 : null);
   const [leader, setLeader] = useState<Leader>(null);
 
@@ -222,15 +223,24 @@ export function Result({ documentText, result, source, onReset }: Props) {
               );
             })}
           </ol>
-          <div
-            ref={marginRef}
-            className={s.margin}
-            data-gloss-margin
-            role={marks.length ? "region" : undefined}
-            aria-label={marks.length ? copy.flags.marginLabel : undefined}
-          >
-            {marks.map((m) => gloss(m, "margin"))}
-          </div>
+          {clean ? (
+            // The clean result (ADR 0005): the clauses stand with nothing
+            // underlined, and the margin holds one note. The empty margin is
+            // the result, not a gap where flags failed to load.
+            <div className={`${s.margin} ${s.cleanMargin}`} data-clean-margin>
+              <p className={s.cleanNote}>{copy.clean.note}</p>
+            </div>
+          ) : (
+            <div
+              ref={marginRef}
+              className={s.margin}
+              data-gloss-margin
+              role={marks.length ? "region" : undefined}
+              aria-label={marks.length ? copy.flags.marginLabel : undefined}
+            >
+              {marks.map((m) => gloss(m, "margin"))}
+            </div>
+          )}
           {leader ? (
             <svg className={s.leader} aria-hidden="true">
               <path key={leader.key} d={leader.d} />
@@ -240,6 +250,7 @@ export function Result({ documentText, result, source, onReset }: Props) {
       </section>
 
       <footer className={`${s.text} ${s.footer}`}>
+        {clean && <p className={s.cleanFootnote}>{copy.clean.footnote}</p>}
         <p className={s.footerLine}>{copy.footer}</p>
         <div className={s.apparatus}>
           <button type="button" className={s.action} onClick={onReset}>

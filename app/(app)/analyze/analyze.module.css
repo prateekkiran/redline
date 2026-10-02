@@ -335,6 +335,36 @@
   }
 }
 
+/* The clean result: no underlines in the text, and the outer margin empty
+   but for one italic note, held in view while the reader scrolls the
+   clauses beside it. */
+.cleanMargin {
+  align-self: start;
+  position: sticky;
+  top: 28px;
+}
+
+.cleanNote {
+  padding-top: 2px;
+  max-width: 22em;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+/* What clean does not mean, under the hairline that opens the footer. */
+.cleanFootnote {
+  max-width: 60ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.cleanFootnote + .footerLine {
+  margin-top: 10px;
+}
+
 .footer {
   margin-top: 40px;
   padding-top: 14px;
@@ -368,6 +398,15 @@
   .margin,
   .leader {
     display: none;
+  }
+
+  /* Clean: the note folds in above the first line instead of vanishing. */
+  .margin.cleanMargin {
+    display: block;
+    position: static;
+    order: -1;
+    grid-column: 1;
+    margin: 0 0 18px calc(34px + 12px);
   }
 
   .foldedGlosses {
