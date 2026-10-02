@@ -33,6 +33,10 @@ misread, so OCR would undermine the thing this version exists to prove.
   support a claim, don't make the claim — this applies to summaries,
   severity ranking, counter-offers, and Q&A answers alike.
 - Ask before adding a dependency.
+- All copy a user reads in this product, meaning the landing page, UI labels,
+  error messages and empty states, has to be run through the humanizer skill
+  before it is committed. Copy that reads as though a model wrote it is a
+  defect, not a matter of taste.
 
 ## Unresolved — ask before deciding
 
