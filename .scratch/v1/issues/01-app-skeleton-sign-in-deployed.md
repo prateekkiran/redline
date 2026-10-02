@@ -14,6 +14,7 @@ Becomes `ready-for-agent` once both decisions above are recorded.
 - [ ] Credential provisioning decision recorded
 - [ ] A visitor can sign up, sign in, and sign out
 - [ ] Signed-out visitors cannot reach any signed-in page
+- [ ] Signed-out visitors land on a public root page, which links to sign-up and sign-in. It is a bare placeholder here; the landing page ticket fills it in
 - [ ] The server makes a model call through OpenRouter only — no direct provider API call anywhere
 - [ ] All secrets live in `.env.local` (gitignored); nothing secret is committed
 - [ ] The app is deployed to Vercel and sign-in works on the deployed URL

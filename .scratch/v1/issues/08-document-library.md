@@ -13,4 +13,6 @@ The red lines in effect at analysis time are added to each saved entry by ticket
 - [ ] Reopening a past document shows its saved analysis without calling the model again
 - [ ] Stored data is the extracted text and analysis output only — no original file
 - [ ] A user cannot read or list another user's documents (enforced at the database, not just the UI)
+- [ ] A user can permanently delete a document from their library, removing its text and analysis output (and, once ticket 09 lands, its recorded red lines)
 - [ ] Repository-layer tests: write an analysis, read it back, contents match
+- [ ] Repository-layer test: after delete, the document can't be read back

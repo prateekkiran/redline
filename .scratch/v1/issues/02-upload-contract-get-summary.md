@@ -14,4 +14,6 @@ PDF only for now (text-based PDFs). DOCX is a separate ticket (12).
 - [ ] A PDF with no extractable text layer (e.g. a scan) is refused with a clear message — no OCR, by design (ADR 0001)
 - [ ] `analyzeDocument(documentText, redLines)` exists as the single server-side entry point for analysis; every OpenRouter call routes through the analysis module
 - [ ] The summary states only what the document says — no claims the text doesn't support
+- [ ] OpenRouter calls are restricted to providers that don't keep or train on prompts, set once in the analysis module (check the setting against OpenRouter's current docs)
+- [ ] The results view has a footer line saying Redline isn't a lawyer (copy goes through the humanizer skill)
 - [ ] A fixture-based test suite exists that calls `analyzeDocument` directly with fixture document text and asserts on output properties only (never on prompt structure)

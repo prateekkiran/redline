@@ -71,7 +71,59 @@ scope, v1 does exactly this, and nothing beyond it:
    flags on top of the baseline model above — never suppress a flag the
    baseline already raised
    ([ADR 0006](docs/adr/0006-red-lines-are-additive-only.md)).
-6. **A saved library of past documents**, persisting across sessions.
+6. **A saved library of past documents**, persisting across sessions. The
+   user can permanently delete any document, which removes its text and
+   analysis.
+
+Two rules sit across all six:
+
+- **Model calls go only to providers that don't keep or train on
+  prompts.** OpenRouter routing is restricted to those providers, so the
+  privacy statement below can be made plainly.
+- **One plain line says Redline isn't a lawyer**, on the landing page and
+  in the results view's footer. It sits outside the flags. Flags stay
+  confident ([ADR 0004](docs/adr/0004-bias-toward-recall-confident-language.md)).
+
+The six capabilities above are the whole product. Around them sits one
+public page:
+
+**A landing page** for signed-out visitors. It explains what Redline does
+and leads to sign-up and sign-in. It is not a seventh capability, and it
+only describes the six above. It is held to the same rule as the rest of
+the product: it says only what is true.
+
+- It names who v1 is for (freelancers) and what it accepts (freelance
+  agreements and general contracts). It says plainly that leases and
+  terms of service aren't supported yet, instead of implying broader
+  support ([ADR 0002](docs/adr/0002-v1-scope-freelancers-only.md)).
+- It doesn't invent proof it doesn't have: no testimonials, user
+  counts, customer logos, accuracy figures or press. None of these exist
+  yet (see "What the research could not tell us").
+- Its privacy statement matches what actually happens. The file is
+  parsed in the browser and never uploaded. The extracted text is
+  stored on Redline's servers until the user deletes it, and is sent
+  through OpenRouter only to model providers that don't keep or train on
+  it.
+- It shows a real analysis: Redline's actual output on a made-up
+  freelance contract, labeled as a sample. It is never a mockup or an
+  invented result. It is regenerated whenever the analysis changes.
+- It says Redline is free during v1 and promises nothing about later
+  pricing.
+- It doesn't name or compare itself to ClearSign or any other tool. It
+  describes Redline's own mechanisms and leaves the comparison to the
+  visitor.
+- It includes the one-line "not a lawyer" disclaimer.
+- It ships on the default Vercel URL with a page title and description
+  and no analytics.
+- It borrows its look from the results screen, which is designed first.
+  The product sets the visual style and the marketing page follows it.
+- "Clean" is never presented as "safe" or as a legal guarantee
+  ([ADR 0005](docs/adr/0005-clean-documents-are-a-real-output.md)).
+- Severity is described as an order only: flags ranked by how far a
+  clause reaches beyond the deal. No Low/Medium/High wording or badges,
+  because that scale is undecided.
+- All of its copy goes through the humanizer skill before it is
+  committed, like every other piece of user-facing copy (CLAUDE.md).
 
 ## What good looks like
 
@@ -106,6 +158,10 @@ scope, v1 does exactly this, and nothing beyond it:
 - **Red lines only add.** For any given document, adding a red line never
   reduces the flag count the baseline model already produced on that
   document — it can only add to it.
+- **The landing page checks out.** Every claim on it maps to one of the six
+  capabilities or to a stated v1 limit. A reviewer finds no invented
+  social proof, no claim of lease or ToS support, and no copy that reads
+  as model-written.
 
 ## My red lines
 
@@ -208,6 +264,15 @@ Excluded on purpose, with a stated reason:
 - **Red-line suppression.** Could ship later, but only with the
   suppression itself made visible in the output — never silently
   ([ADR 0006](docs/adr/0006-red-lines-are-additive-only.md)).
+- **Trying Redline without an account.** Every analysis belongs to a
+  signed-in user. The labeled sample on the landing page shows what the
+  product does instead. An unauthenticated path to the model would need
+  its own abuse and cost limits.
+- **Comparing Redline to competitors on the landing page.** The research
+  doesn't show Redline is better yet, so the page makes no comparison.
+- **Analytics and a custom domain.** v1 ships on the Vercel URL with
+  nothing tracking visitors. Both can come later. Analytics would need to
+  be disclosed, and it is a new dependency.
 
 Not decided yet, so not in v1 — different from the above, these aren't
 ruled out, just unresolved:

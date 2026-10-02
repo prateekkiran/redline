@@ -1,6 +1,8 @@
 # Redline
 
-Web app: upload a contract/lease/freelance agreement/ToS, get back a
+Web app: upload a freelance agreement or general contract (leases and
+terms of service are out of scope for v1, see
+`docs/adr/0002-v1-scope-freelancers-only.md`), get back a
 plain-English summary, clauses ranked by severity with the exact source
 sentence shown, a drafted counter-offer per flagged clause, a Q&A box that
 answers only from the uploaded document, an editable list of the user's own
@@ -15,10 +17,14 @@ red lines that drives the analysis, and a saved library of past documents.
   traceable source sentence is a bug, not a missing nice-to-have.
 - Model calls go through OpenRouter — no direct calls to a model provider's
   own API.
+- OpenRouter routing is restricted to providers that don't keep or train
+  on prompts. The landing page's privacy statement depends on this.
 
 ## Scope
 
-Build exactly the six capabilities above and stop. If an addition looks like
+Build exactly the six capabilities above and stop. The one addition is a
+public landing page for signed-out visitors. It describes those six and
+leads to sign-up; it is not a seventh capability. If an addition looks like
 an obvious next step but isn't in that list, ask before building it.
 Explicitly excluded for this version: payments/billing, OCR for scanned
 documents, and sharing a document between users. OCR is excluded on purpose,

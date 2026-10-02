@@ -23,6 +23,9 @@ that answers questions only from their document; an editable list of their
 own red lines that adds to, but never removes from, the baseline analysis;
 and a saved library of past documents.
 
+A public landing page explains this to signed-out visitors and leads to
+sign-up. It describes only the capabilities above and v1's stated limits.
+
 ## User Stories
 
 1. As a freelancer, I want to upload a freelance agreement or general
@@ -102,6 +105,31 @@ and a saved library of past documents.
 25. As a developer maintaining Redline, I want an in-document/
     out-of-document question fixture set for the Q&A function, so that
     fabricated answers are caught automatically, not by eyeballing.
+26. As a freelancer who hasn't signed up, I want a landing page that tells
+    me what Redline does with my contract, so that I can decide whether to
+    try it.
+27. As a freelancer who hasn't signed up, I want the landing page to say
+    plainly which documents v1 supports, so that I don't sign up expecting
+    it to check my lease or a terms-of-service page.
+28. As a freelancer who hasn't signed up, I want the landing page to tell
+    me accurately what happens to my document, so that I know the file
+    stays in my browser and only its text is stored and sent to a model.
+29. As a freelancer who hasn't signed up, I want to go from the landing
+    page straight to sign-up or sign-in, so that I can start without
+    hunting for the way in.
+30. As a freelancer who hasn't signed up, I want the landing page to show
+    no testimonials, numbers or endorsements that aren't real, so that I
+    can trust the rest of what it says.
+31. As a freelancer who hasn't signed up, I want to see a real sample
+    analysis on the landing page, so that I can see what a cited flag and
+    a counter-offer look like before I create an account.
+32. As a freelancer, I want to permanently delete a document from my
+    library, so that a contract I no longer want stored is gone.
+33. As a freelancer, I want to know my document text only goes to model
+    providers that don't keep or train on it, so that I can upload a
+    contract without it ending up in someone's training data.
+34. As a freelancer, I want Redline to say plainly that it isn't a lawyer,
+    so that I know what kind of help I'm getting.
 
 ## Implementation Decisions
 
@@ -141,6 +169,45 @@ and a saved library of past documents.
   document text, the `analyzeDocument` output (summary + flags), and the
   red lines in effect at the time of that analysis, associated with the
   authenticated user (Supabase auth).
+- The landing page is the only page a signed-out visitor can reach, apart
+  from sign-up and sign-in. Every other page needs an account. It has no
+  model calls and no upload, and it doesn't create a seventh capability.
+- Landing page copy may describe only the six capabilities and v1's stated
+  limits (freelance agreements and general contracts only; no OCR). It
+  contains no testimonials, user counts, customer logos, accuracy figures
+  or press, because none exist. Any privacy statement matches the actual
+  data flow: the file is parsed in the browser and never uploaded; the
+  extracted text is stored server-side and sent to a model through
+  OpenRouter.
+- The landing page describes severity as an order only (flags ranked by
+  how far a clause reaches beyond the deal). It uses no Low/Medium/High
+  wording or badges while that scale is undecided.
+- The landing page lives at the public root page that ticket 01 sets up
+  as a placeholder.
+- Every OpenRouter call is restricted to providers that don't keep or
+  train on prompts. This is configured once in the analysis module, not
+  per call. Check the exact OpenRouter setting against its current docs
+  before relying on it.
+- The library supports permanent per-document delete, which removes the
+  stored text, the analysis output and the red lines recorded with it.
+  This is part of the library capability, not a new one.
+- One plain "Redline isn't a lawyer" line appears on the landing page
+  and in the results view's footer. It is never inside a flag, and flags
+  stay unhedged.
+- The landing page sample is real `analyzeDocument` output on a
+  fictional freelance-contract fixture, frozen into the page and labeled
+  as a sample. It is regenerated when the analysis changes. Because of
+  this, the landing page depends on cited flags and counter-offers
+  working.
+- The landing page says Redline is free during v1 and promises nothing
+  about later pricing. It doesn't name or compare itself to any
+  competitor.
+- The landing page ships on the default Vercel URL with a page title and
+  meta description and no analytics.
+- Design order: the upload-and-results screen sets the visual design
+  first, and the landing page borrows from it.
+- Landing page copy, like all user-facing copy, goes through the humanizer
+  skill before it is committed (CLAUDE.md).
 
 ## Testing Decisions
 
@@ -174,6 +241,11 @@ and a saved library of past documents.
 - Library/persistence tests are conventional repository-layer tests
   (write, then read back) — not fixture-based behavior tests, and outside
   this fixture suite.
+- The landing page is checked by review, not by the fixture suite. The
+  review confirms each claim maps to a capability or a stated limit and
+  that nothing is invented. One automated check is worth having: a
+  signed-out visitor reaches the landing page and can get to sign-up, but
+  can't reach any other page.
 
 ## Out of Scope
 
@@ -190,6 +262,12 @@ and a saved library of past documents.
   counter-offer negotiation.
 - Package manager and credential-provisioning decisions (CLAUDE.md,
   "Unresolved") — prerequisites to implementation, not part of this spec.
+- Price tiers, testimonials, or any social proof on the landing page. There
+  are no payments in v1 and no real proof yet. The page says only "free
+  during v1".
+- Trying Redline without an account.
+- Naming or comparing against competitors on the landing page.
+- Analytics and a custom domain.
 
 ## Further Notes
 
