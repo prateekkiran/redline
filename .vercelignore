@@ -1,0 +1,7 @@
+# Never upload local secrets or working files with `vercel deploy`.
+.env*
+.claude/
+.impeccable/review/
+.impeccable/questions/
+.playwright-mcp/
+research/
