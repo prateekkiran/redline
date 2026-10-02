@@ -11,6 +11,7 @@ red lines that drives the analysis, and a saved library of past documents.
 ## Settled decisions (do not reinterpret)
 
 - Stack: Next.js, Supabase (auth + database), deployed on Vercel.
+- Package manager: pnpm.
 - The uploaded file is parsed client-side, in the browser. Only extracted
   text is ever stored server-side — never the original file.
 - Every risk flag must cite the exact source sentence. A flag with no
@@ -46,8 +47,6 @@ misread, so OCR would undermine the thing this version exists to prove.
 
 ## Unresolved — ask before deciding
 
-- Package manager (npm/pnpm/yarn) is not chosen yet. Ask before running the
-  first install, and don't infer it from what happens to get typed first.
 - Credential provisioning is not decided: whether the user supplies the
   Supabase project + OpenRouter key themselves, or the agent provisions them.
   Until this is resolved, stop and ask rather than provisioning anything or

@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-02T15:32:38+00:00",
+  "title": "Design System: Redline",
+  "extensions": {
+    "colorMeta": {
+      "cloth": {
+        "role": "primary",
+        "displayName": "Oxblood Book Cloth",
+        "canonical": "oklch(35.4% 0.123 24.3)",
+        "tonalRamp": [
+          "#250000",
+          "#48050a",
+          "#6e2121",
+          "#963d3a",
+          "#ba635e",
+          "#dc8c86",
+          "#feb5af",
+          "#ffdcd6"
+        ]
+      },
+      "cloth-deep": {
+        "role": "primary",
+        "displayName": "Bound Oxblood",
+        "canonical": "oklch(28.2% 0.094 23.4)",
+        "tonalRamp": [
+          "#200001",
+          "#411212",
+          "#652b2a",
+          "#8a4744",
+          "#ae6b68",
+          "#d0928e",
+          "#f3bbb6",
+          "#ffe1dd"
+        ]
+      },
+      "rubric": {
+        "role": "primary",
+        "displayName": "Rubric Red",
+        "canonical": "oklch(53.0% 0.197 29.1)",
+        "tonalRamp": [
+          "#310000",
+          "#590000",
+          "#840000",
+          "#b10806",
+          "#d6493b",
+          "#f77969",
+          "#ffa796",
+          "#ffd1c1"
+        ],
+        "note": "Reserved for the active flag, focus outline and caret."
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Edition Page",
+        "canonical": "oklch(97.5% 0.004 121.6)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#242422",
+          "#3f403e",
+          "#5d5e5b",
+          "#80817e",
+          "#a4a5a2",
+          "#cacbc8",
+          "#eeefec"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Press Ink",
+        "canonical": "oklch(20.9% 0.006 271.1)",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#232427",
+          "#3e4043",
+          "#5c5d61",
+          "#7f8084",
+          "#a3a4a8",
+          "#c9cacf",
+          "#edeef3"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Faded Ink",
+        "canonical": "oklch(45.7% 0.008 268.5)",
+        "tonalRamp": [
+          "#0a0b0f",
+          "#222428",
+          "#3e4044",
+          "#5b5d63",
+          "#7e8085",
+          "#a2a4aa",
+          "#c8cad0",
+          "#eceef4"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(83.9% 0.007 124.5)",
+        "tonalRamp": [
+          "#0a0c08",
+          "#232521",
+          "#3f403c",
+          "#5d5e5a",
+          "#7f817c",
+          "#a3a5a1",
+          "#c9cbc6",
+          "#edefea"
+        ]
+      },
+      "cloth-ink": {
+        "role": "neutral",
+        "displayName": "Cloth Ink",
+        "canonical": "oklch(85.9% 0.034 29.4)",
+        "tonalRamp": [
+          "#140706",
+          "#301f1d",
+          "#4e3a37",
+          "#6f5753",
+          "#927a76",
+          "#b59f9b",
+          "#d9c5c2",
+          "#fceae7"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Closing line on the cloth."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The one-line promise on the first leaf."
+      },
+      "display-clause": {
+        "displayName": "Display Clause",
+        "purpose": "Top-ranked cited sentence inside rubric brackets."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Leaf headings."
+      },
+      "subheading": {
+        "displayName": "Subheading",
+        "purpose": "Section heads within a leaf."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Contract clauses and prose, 58-62ch."
+      },
+      "gloss": {
+        "displayName": "Gloss",
+        "purpose": "Plain reading of a flag in the margin."
+      },
+      "rank-numeral": {
+        "displayName": "Rank Numeral",
+        "purpose": "Flag rank; ink at rest, rubric when active."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Action buttons (Archivo)."
+      },
+      "label-note": {
+        "displayName": "Label Note",
+        "purpose": "Action notes beside or under a button (Archivo)."
+      }
+    },
+    "contrast": [
+      {
+        "pair": "ink on page",
+        "ratio": "16.5:1"
+      },
+      {
+        "pair": "ink-muted on page",
+        "ratio": "6.7:1"
+      },
+      {
+        "pair": "rubric on page",
+        "ratio": "5.4:1"
+      },
+      {
+        "pair": "page on cloth",
+        "ratio": "11.0:1"
+      },
+      {
+        "pair": "cloth-ink on cloth",
+        "ratio": "7.6:1"
+      }
+    ],
+    "shadows": [],
+    "motion": [
+      {
+        "name": "lift",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1) 900ms, 260ms stagger by rank",
+        "purpose": "Cited sentence travels from the text into its ranked margin gloss when the agreement scrolls 20% into view (Web Animations). Wide, motion-allowed screens only."
+      },
+      {
+        "name": "leader-rule",
+        "value": "stroke-dashoffset 2000 to 0, 520ms linear",
+        "purpose": "Draws the 1px rubric leader from the active sentence to its gloss numeral."
+      },
+      {
+        "name": "state-color",
+        "value": "160ms linear",
+        "purpose": "Color changes on brackets, numerals, cited underlines and button fills."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "final state, no lift",
+        "purpose": "prefers-reduced-motion shows glosses already in place."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "900px",
+        "purpose": "At and above: three-column edition grid with hung margin glosses and leader rule. Below: glosses fold beneath their clause."
+      }
+    ],
+    "focus": {
+      "value": "outline: 2px solid var(--rubric); outline-offset: 3px",
+      "onCloth": "outline-color: var(--page)"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action, set in the apparatus at the foot of a leaf.",
+      "html": "<a href=\"#\" class=\"ds-action\">Try it on your contract</a>",
+      "css": ".ds-action{display:inline-block;padding:15px 24px;border-radius:2px;background:var(--ink,#17181b);color:var(--page,#f6f7f4);font-family: var(--sans, Archivo, Helvetica Neue, Arial, sans-serif);font-size:16px;font-weight:600;text-decoration:none;transition:background-color 160ms linear;} .ds-action:hover{background:var(--cloth,#6e1418);} .ds-action:focus-visible{outline:2px solid var(--rubric,#c4231a);outline-offset:3px;}"
+    },
+    {
+      "name": "Action on Cloth",
+      "kind": "button",
+      "refersTo": "button-on-cloth",
+      "description": "The closing action, page-white on the oxblood cloth.",
+      "html": "<div class=\"ds-cloth-wrap\"><a href=\"#\" class=\"ds-action-cloth\">Try it on your contract</a></div>",
+      "css": ".ds-cloth-wrap{background:var(--cloth,#6e1418);padding:32px;} .ds-action-cloth{display:inline-block;padding:15px 24px;border-radius:2px;background:var(--page,#f6f7f4);color:var(--ink,#17181b);font-family: var(--sans, Archivo, Helvetica Neue, Arial, sans-serif);font-size:16px;font-weight:600;text-decoration:none;transition:background-color 160ms linear;} .ds-action-cloth:hover{background:var(--cloth-ink,#e6c9c4);} .ds-action-cloth:focus-visible{outline:2px solid var(--page,#f6f7f4);outline-offset:3px;}"
+    },
+    {
+      "name": "Cloth Band",
+      "kind": "nav",
+      "refersTo": "cloth-band",
+      "description": "Wordmark and sign-in stamped in page-white on the cloth.",
+      "html": "<header class=\"ds-band\"><a href=\"#\" class=\"ds-wordmark\">Redline</a><a href=\"#\" class=\"ds-signin\">Sign in</a></header>",
+      "css": ".ds-band{display:flex;align-items:baseline;justify-content:space-between;padding:22px 24px 20px;background:var(--cloth,#6e1418);color:var(--page,#f6f7f4);} .ds-wordmark{font-family: var(--serif, Cardo, Georgia, serif);font-weight:700;font-size:28px;letter-spacing:0.01em;color:inherit;text-decoration:none;} .ds-signin{font-family: var(--sans, Archivo, Helvetica Neue, Arial, sans-serif);font-size:15px;color:inherit;text-underline-offset:0.22em;} .ds-band a:focus-visible{outline:2px solid var(--page,#f6f7f4);outline-offset:3px;}"
+    },
+    {
+      "name": "Margin Gloss",
+      "kind": "custom",
+      "refersTo": "gloss",
+      "description": "A flag as a margin note: rank numeral, clause reference, bracketed lemma, plain reading. Hover or focus makes it the active, rubric flag.",
+      "html": "<div class=\"ds-gloss\" tabindex=\"0\"><span class=\"ds-rank\">1</span><div><p class=\"ds-ref\">Clause 3.1</p><p class=\"ds-lemma\">The Designer assigns to the Client all right, title and interest in all work product<span class=\"ds-bracket\">]</span></p><p class=\"ds-reading\">This hands the client everything you make while the contract runs.</p></div></div>",
+      "css": ".ds-gloss{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:10px;max-width:300px;padding:2px 0 0;background:var(--page,#f6f7f4);color:var(--ink,#17181b);font-family: var(--serif, Cardo, Georgia, serif);cursor:pointer;} .ds-gloss p{margin:0;} .ds-rank{font-size:34px;line-height:0.9;font-variant-numeric:lining-nums;transition:color 160ms linear;} .ds-ref{font-style:italic;font-size:15px;line-height:1.3;color:var(--ink-muted,#55575c);} .ds-lemma{margin-top:4px !important;font-size:14px;line-height:1.32;color:var(--ink-muted,#55575c);} .ds-bracket{color:var(--ink-muted,#55575c);transition:color 160ms linear;} .ds-reading{margin-top:4px !important;font-size:15px;line-height:1.4;} .ds-gloss:hover .ds-rank,.ds-gloss:focus-visible .ds-rank,.ds-gloss:hover .ds-bracket,.ds-gloss:focus-visible .ds-bracket{color:var(--rubric,#c4231a);} .ds-gloss:focus-visible{outline:2px solid var(--rubric,#c4231a);outline-offset:6px;}"
+    },
+    {
+      "name": "Cited Sentence",
+      "kind": "custom",
+      "refersTo": "gloss-active",
+      "description": "A numbered clause whose cited words are underlined in faded ink, rubricated when their flag is active.",
+      "html": "<div class=\"ds-clause-row\"><span class=\"ds-num\">3.1</span><p class=\"ds-clause\"><span class=\"ds-cited\" tabindex=\"0\">The Designer assigns to the Client all right, title and interest in all work product.</span></p></div>",
+      "css": ".ds-clause-row{display:grid;grid-template-columns:48px minmax(0,600px);column-gap:40px;background:var(--page,#f6f7f4);color:var(--ink,#17181b);font-family: var(--serif, Cardo, Georgia, serif);font-size:18px;line-height:1.55;} .ds-num{padding-top:0.12em;font-size:15px;font-variant-numeric:lining-nums tabular-nums;color:var(--ink-muted,#55575c);text-align:right;} .ds-clause{margin:0;max-width:62ch;} .ds-cited{text-decoration:underline 1px var(--ink-muted,#55575c);text-underline-offset:0.24em;transition:color 160ms linear,text-decoration-color 160ms linear;} .ds-cited:hover,.ds-cited:focus-visible{color:var(--rubric,#c4231a);text-decoration-color:var(--rubric,#c4231a);text-decoration-thickness:2px;outline:none;}"
+    },
+    {
+      "name": "Variant Reading",
+      "kind": "custom",
+      "description": "A counter-offer set as a variant reading under its rank numeral.",
+      "html": "<ol class=\"ds-variants\"><li class=\"ds-variant\"><span class=\"ds-vrank\">1</span><div><p class=\"ds-vref\">Clause 3.1<span class=\"ds-vbracket\">]</span></p><p class=\"ds-vtext\">The Designer assigns to the Client all right, title and interest in the Deliverables, once the Client has paid the fees for them in full.</p></div></li></ol>",
+      "css": ".ds-variants{list-style:none;margin:0;padding:0;max-width:640px;background:var(--page,#f6f7f4);color:var(--ink,#17181b);font-family: var(--serif, Cardo, Georgia, serif);} .ds-variant{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:10px;padding:14px 0;border-top:1px solid var(--rule,#c9cbc6);} .ds-variant p{margin:0;} .ds-vrank{font-size:34px;line-height:0.9;font-variant-numeric:lining-nums;transition:color 160ms linear;} .ds-vref{font-style:italic;font-size:15px;color:var(--ink-muted,#55575c);} .ds-vbracket{transition:color 160ms linear;} .ds-vtext{margin-top:4px !important;font-size:17px;line-height:1.5;} .ds-variant:hover .ds-vrank,.ds-variant:hover .ds-vbracket{color:var(--rubric,#c4231a);}"
+    },
+    {
+      "name": "Leaf with Running Head",
+      "kind": "card",
+      "refersTo": "leaf",
+      "description": "An edition page on cloth: running head, content, folio. The system's only container.",
+      "html": "<div class=\"ds-cloth\"><article class=\"ds-leaf\"><div class=\"ds-runhead\"><span>Freelance Design Services Agreement</span><span>A made-up contract, with flags written by hand.</span></div><h2 class=\"ds-heading\">Read the whole agreement</h2><p class=\"ds-folio\">2</p></article></div>",
+      "css": ".ds-cloth{background:var(--cloth,#6e1418);padding:24px;} .ds-leaf{max-width:1180px;margin:0 auto;padding:28px 56px 24px;background:var(--page,#f6f7f4);color:var(--ink,#17181b);font-family: var(--serif, Cardo, Georgia, serif);} .ds-runhead{display:flex;justify-content:space-between;gap:24px;padding-bottom:12px;border-bottom:1px solid var(--rule,#c9cbc6);font-style:italic;font-size:15px;color:var(--ink-muted,#55575c);} .ds-heading{margin:36px 0 12px 88px;font-weight:400;font-size:clamp(28px,2.6vw,36px);line-height:1.15;letter-spacing:-0.01em;} .ds-folio{margin:32px 0 0;text-align:center;font-size:14px;color:var(--ink-muted,#55575c);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Annotated Edition",
+    "overview": "Redline sets a contract the way a scholar sets a critical edition. The document is the text; every flag is a gloss in the outer margin, keyed by a rank numeral and a lemma bracket to the exact words it quotes. Oxblood book cloth is the ground everything lies on, and one cool, bright page at a time carries the contract. The reader should feel that the text has been read closely by an editor, not scored by a dashboard.\n\nDensity is that of a well-made book: a numbered clause column, a measured text column, and a generous outer margin, separated by hairline rules rather than boxes. Hierarchy comes from type size, italic, numerals and position, never from fills, badges or color coding. Color is nearly absent on the page itself; the single loud mark, rubric red, belongs only to the flag being read. The edition refuses the category's split hero with a dashboard screenshot and traffic-light risk badges.\n\nMotion is ruled and linear, like a pen drawing a line. The one signature movement is the cited sentence lifting out of the text into its ranked place in the margin, and a leader rule drawn from sentence to gloss. Nothing bounces.",
+    "keyCharacteristics": [
+      "Oxblood cloth field; bright page leaves lying on it with cloth showing between them.",
+      "A scholarly book face (Cardo) sets document, glosses and headings; a grotesk (Archivo) sets only controls and small action notes.",
+      "Clause numbers, rank numerals, lemma brackets, running heads, folios and hairline rules are the whole ornament vocabulary.",
+      "Rubric red marks exactly one thing at a time: the active flag.",
+      "Severity is shown by rank order alone.",
+      "Flat: no shadows, gradients, pills, icons or badges."
+    ],
+    "rules": [
+      {
+        "name": "The One Rubric Rule",
+        "body": "Rubric red marks only the flag currently being read: its brackets, rank numeral, cited-sentence underline and leader rule. Every other bracket and cited sentence waits in faded ink. If two flags are red at once, one of them is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rank Not Rating Rule",
+        "body": "Severity is shown as rank order (1, 2, 3...) only. No Low/Medium/High labels, no traffic-light colors, no severity hues; a label scale is an undecided product item.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cloth Holds, The Page Speaks Rule",
+        "body": "Content lives on the page. The cloth carries only the wordmark, navigation, the closing call and the colophon.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Hands Rule",
+        "body": "Cardo for anything that is read, Archivo for anything that is pressed or that explains a press. Do not set document text, glosses or headings in Archivo, and do not set buttons in Cardo.",
+        "section": "typography"
+      },
+      {
+        "name": "The Italic Is Apparatus Rule",
+        "body": "Italic marks the editorial layer (running heads, clause references, questions, the empty-margin note), never emphasis inside contract text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper On Cloth Rule",
+        "body": "Separation is achieved by placing page on cloth or by drawing a rule. Never lift anything with a shadow, glow or gradient.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep rubric red on exactly one flag at a time: its brackets, numeral, cited underline and leader rule.",
+      "Do show every flag with its rank numeral, its clause reference and its exact quoted sentence.",
+      "Do separate peers with 1px hairlines and open a new apparatus with a 1px ink rule.",
+      "Do align non-clause content to the text column (88px in from the leaf's content edge on desktop).",
+      "Do fold margin glosses beneath their clause below 900px.",
+      "Do keep the cloth for wordmark, navigation, closing call and colophon; put all content on the page.",
+      "Do design the clean state as an empty margin with one plain note.",
+      "Do honor reduced motion by showing the final state.",
+      "Do run all user-facing copy through the humanizer skill before it ships."
+    ],
+    "donts": [
+      "Don't use drop shadows, gradients, pills, chips, badges or icon glyphs.",
+      "Don't label or color severity (no Low/Medium/High, no traffic lights); rank order is the only severity signal.",
+      "Don't set document text, glosses or headings in Archivo, or controls in Cardo.",
+      "Don't use rubric red for decoration, headings, links, or more than one flag.",
+      "Don't add bounce, spring or overshoot to motion; movement is ruled and linear in feel.",
+      "Don't round corners beyond the action button's 2px.",
+      "Don't replace the edition with a split hero and a dashboard screenshot."
+    ]
+  }
+}

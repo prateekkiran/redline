@@ -1,0 +1,697 @@
+/* The page is one critical edition lying on oxblood book cloth: each
+   section is a leaf of that edition, the cloth shows between them. */
+
+.cloth {
+  min-height: 100vh;
+  padding: 0 24px 0;
+}
+
+/* Cloth band */
+
+.band,
+.close,
+.colophon {
+  max-width: var(--leaf-max);
+  margin: 0 auto;
+}
+
+.band {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 22px 0 20px;
+  color: var(--page);
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.signIn {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--page);
+}
+
+.band :focus-visible,
+.close :focus-visible,
+.colophon :focus-visible {
+  outline-color: var(--page);
+}
+
+/* Leaves */
+
+.leaf {
+  position: relative;
+  max-width: var(--leaf-max);
+  margin: 0 auto;
+  padding: 28px 56px 24px;
+  background: var(--page);
+}
+
+.leaf + .leaf {
+  margin-top: 40px;
+}
+
+.runningHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.folio {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+/* The edition's grid: clause numbers, text column, outer margin. */
+
+.cols {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 600px) minmax(260px, 1fr);
+  column-gap: 40px;
+}
+
+.textCol {
+  grid-column: 2;
+}
+
+.num {
+  grid-column: 1;
+  padding-top: 0.12em;
+  font-size: 15px;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+.clause {
+  grid-column: 2;
+  padding-bottom: 14px;
+  max-width: 62ch;
+}
+
+/* Rubric red belongs to the flag being read; every other bracket waits in grey. */
+.bracket {
+  color: var(--ink-muted);
+  transition: color 160ms linear;
+}
+
+.bracketLive,
+.glossActive .bracket,
+.variantActive .bracket {
+  color: var(--rubric);
+}
+
+/* First leaf */
+
+.promise {
+  max-width: 19em;
+  margin: 22px 0 24px calc(48px + 40px);
+  font-weight: 400;
+  font-size: clamp(30px, 3.1vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.excerpt {
+  align-items: start;
+}
+
+.numDisplay {
+  padding-top: 0.75em;
+}
+
+.displayClause {
+  grid-column: 2;
+  position: relative;
+  margin: 2px 0 22px;
+  font-size: clamp(24px, 2.3vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.008em;
+  text-wrap: pretty;
+}
+
+.displayClause .bracket:first-child {
+  position: absolute;
+  left: -0.42em;
+}
+
+.heroGloss {
+  grid-column: 3;
+  margin: 0 0 14px;
+  padding: 2px 0 0;
+  border-bottom: 0;
+}
+
+.heroGloss .reading {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.excerpt .gloss {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+/* Glosses */
+
+.gloss {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 0 0 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gloss:last-child {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.rank {
+  align-self: start;
+  font-size: 34px;
+  line-height: 0.9;
+  font-variant-numeric: lining-nums;
+  color: var(--ink);
+  transition: color 160ms linear;
+}
+
+.glossActive .rank,
+.variantActive .rank {
+  color: var(--rubric);
+}
+
+.ref {
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--ink-muted);
+}
+
+.reading {
+  margin-top: 4px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.lemma {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.32;
+  color: var(--ink-muted);
+}
+
+.awaiting {
+  visibility: hidden;
+}
+
+.ghost {
+  position: absolute;
+  margin: 0;
+  z-index: 2;
+  pointer-events: none;
+  color: var(--rubric);
+}
+
+/* Apparatus: where an edition keeps its notes, this page keeps its action. */
+
+.apparatus {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-top: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--ink);
+}
+
+.action {
+  flex: none;
+  display: inline-block;
+  padding: 15px 24px;
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--page);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 160ms linear;
+}
+
+.action:hover {
+  background: var(--cloth);
+}
+
+.actionNote {
+  max-width: 52ch;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+/* Later leaves */
+
+.heading {
+  margin: 36px 0 12px;
+  font-weight: 400;
+  font-size: clamp(28px, 2.6vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  max-width: 58ch;
+  margin-bottom: 36px;
+}
+
+.subheading {
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+/* The full agreement */
+
+.agreement {
+  position: relative;
+  align-items: start;
+  /* The hung margin sets min-height; extra height goes below the text,
+     never into the rows. */
+  align-content: start;
+}
+
+.contractTitle {
+  grid-column: 2;
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.parties {
+  grid-column: 2;
+  margin-bottom: 8px;
+  max-width: 62ch;
+}
+
+.contractSection {
+  grid-column: 2;
+  margin: 18px 0 6px;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.cited {
+  text-decoration: underline 1px var(--ink-muted);
+  text-underline-offset: 0.24em;
+  transition: color 160ms linear, text-decoration-color 160ms linear;
+}
+
+.citedActive,
+.lifting {
+  color: var(--rubric);
+  text-decoration-color: var(--rubric);
+  text-decoration-thickness: 2px;
+}
+
+/* Desktop: glosses hang in the outer margin beside their sentence
+   (positioned by Reading.tsx); without script they stack in order. */
+.marginCol {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: max(260px, calc(100% - 728px));
+}
+
+.marginCol[data-hung] .hungGloss {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.hungGloss {
+  margin: 0;
+  padding: 2px 0 0;
+  border-bottom: 0;
+  cursor: pointer;
+}
+
+.hungGloss .reading {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.hungGloss:focus-visible {
+  outline-offset: 6px;
+}
+
+.inlineGloss {
+  display: none;
+}
+
+.leader {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.leader path {
+  fill: none;
+  stroke: var(--rubric);
+  stroke-width: 1;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: rule 520ms linear forwards;
+}
+
+@keyframes rule {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.variants {
+  margin-top: 28px;
+  margin-left: calc(48px + 40px);
+  padding-top: 22px;
+  border-top: 1px solid var(--ink);
+}
+
+.variantList {
+  margin-top: 16px;
+  max-width: 640px;
+}
+
+.variant {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.variantText {
+  margin-top: 4px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* Clean leaf */
+
+.cleanSample {
+  align-items: start;
+}
+
+.emptyMargin {
+  grid-column: 3;
+  grid-row: 1 / span 5;
+  align-self: center;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-muted);
+}
+
+.footnote {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  max-width: 60ch;
+  margin-left: calc(48px + 40px);
+  font-size: 16px;
+  color: var(--ink-muted);
+}
+
+/* Also leaf */
+
+.also {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 56px;
+  margin-left: calc(48px + 40px);
+}
+
+.alsoItem {
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.alsoItem dd {
+  margin-top: 6px;
+  max-width: 52ch;
+}
+
+.exchange {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.q,
+.a {
+  grid-column: 1 / -1;
+}
+
+.q {
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-muted);
+  margin-top: 10px;
+}
+
+.q:first-child {
+  margin-top: 0;
+}
+
+.a {
+  padding-left: 16px;
+}
+
+.a .ref {
+  margin-left: 6px;
+}
+
+.specimen {
+  margin-top: 14px;
+  padding-left: 16px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Limits leaf */
+
+.limits {
+  margin-bottom: 36px;
+}
+
+.limits li {
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.limits li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.limitHead {
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+.limits li p + p {
+  color: var(--ink-muted);
+}
+
+.privacy {
+  margin-top: 8px;
+  max-width: 60ch;
+}
+
+/* Closing band on the cloth */
+
+.close {
+  padding: 96px 0 72px;
+  color: var(--page);
+}
+
+.closeHeading {
+  max-width: 14em;
+  margin-bottom: 32px;
+  font-weight: 400;
+  font-size: clamp(36px, 4.6vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.actionOnCloth {
+  background: var(--page);
+  color: var(--ink);
+}
+
+.actionOnCloth:hover {
+  background: var(--cloth-ink);
+}
+
+.closeNote {
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  color: var(--cloth-ink);
+}
+
+.colophon {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 0 32px;
+  border-top: 1px solid rgba(246, 247, 244, 0.22);
+  font-size: 16px;
+  color: var(--cloth-ink);
+}
+
+/* Narrow screens: the margin folds in beneath what it glosses. */
+
+@media (max-width: 899px) {
+  .cloth {
+    padding: 0 10px;
+  }
+
+  .band {
+    padding: 16px 6px 14px;
+  }
+
+  .wordmark {
+    font-size: 24px;
+  }
+
+  .leaf {
+    padding: 20px 18px 18px;
+  }
+
+  .leaf + .leaf {
+    margin-top: 24px;
+  }
+
+  .runningHead {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px;
+  }
+
+  .cols {
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+
+  .promise {
+    grid-column: 1 / -1;
+    margin: 24px 0;
+    font-size: 30px;
+  }
+
+  .textCol,
+  .contractTitle,
+  .parties,
+  .contractSection {
+    grid-column: 1 / -1;
+  }
+
+  .heading {
+    grid-column: 1 / -1;
+  }
+
+  .displayClause {
+    font-size: 24px;
+  }
+
+  /* Phones see the top-ranked flag here; the full ranked list follows. */
+  .heroExtra {
+    display: none;
+  }
+
+  .displayClause .bracket:first-child {
+    position: static;
+  }
+
+  .heroGloss,
+  .inlineGloss {
+    grid-column: 2;
+    grid-row: auto;
+    padding-top: 0;
+  }
+
+  .inlineGloss {
+    display: grid;
+  }
+
+  .marginCol {
+    display: none;
+  }
+
+  .heroGloss,
+  .inlineGloss {
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .emptyMargin {
+    grid-column: 2;
+    grid-row: auto;
+    margin-top: 6px;
+  }
+
+  .apparatus {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .action {
+    text-align: center;
+  }
+
+  .footnote,
+  .also,
+  .variants {
+    margin-left: 0;
+  }
+
+  .also {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+
+  .leader {
+    display: none;
+  }
+
+  .close {
+    padding: 64px 6px 48px;
+  }
+
+  .colophon {
+    flex-direction: column;
+    padding: 18px 6px 28px;
+  }
+}

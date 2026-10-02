@@ -28,8 +28,8 @@ sign-up. It describes only the capabilities above and v1's stated limits.
 
 ## User Stories
 
-1. As a freelancer, I want to upload a freelance agreement or general
-   contract, so that I can get an analysis before I sign it.
+1. As a freelancer, I want to upload or paste a freelance agreement or
+   general contract, so that I can get an analysis before I sign it.
 2. As a freelancer, I want Redline to reject a lease or terms-of-service
    upload with a clear message, so that I don't mistake an out-of-scope
    analysis for a real one.
@@ -194,18 +194,26 @@ sign-up. It describes only the capabilities above and v1's stated limits.
 - One plain "Redline isn't a lawyer" line appears on the landing page
   and in the results view's footer. It is never inside a flag, and flags
   stay unhedged.
-- The landing page sample is real `analyzeDocument` output on a
-  fictional freelance-contract fixture, frozen into the page and labeled
-  as a sample. It is regenerated when the analysis changes. Because of
-  this, the landing page depends on cited flags and counter-offers
+- At launch the landing page sample is real `analyzeDocument` output on
+  a fictional freelance-contract fixture, frozen into the page and
+  labeled as a sample. It is regenerated when the analysis changes. The
+  launch version therefore depends on cited flags and counter-offers
   working.
 - The landing page says Redline is free during v1 and promises nothing
   about later pricing. It doesn't name or compare itself to any
   competitor.
 - The landing page ships on the default Vercel URL with a page title and
   meta description and no analytics.
-- Design order: the upload-and-results screen sets the visual design
-  first, and the landing page borrows from it.
+- Design order: one design direction covers both the landing page and
+  the app shell. The landing page is built first, and the app shell
+  follows the same direction.
+- Until `analyzeDocument` works, the landing page sample is hand-written
+  and labeled as such. Its quoted sentences are checked in code as exact
+  substrings of the sample contract. It must be replaced with real output
+  before launch.
+- A document can be provided by pasting its text as well as by uploading
+  a file. Pasted text is the document text as-is, so citations stay
+  verbatim substrings. The lease/ToS gate applies to pasted text too.
 - Landing page copy, like all user-facing copy, goes through the humanizer
   skill before it is committed (CLAUDE.md).
 

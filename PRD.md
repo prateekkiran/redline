@@ -104,9 +104,12 @@ the product: it says only what is true.
   stored on Redline's servers until the user deletes it, and is sent
   through OpenRouter only to model providers that don't keep or train on
   it.
-- It shows a real analysis: Redline's actual output on a made-up
-  freelance contract, labeled as a sample. It is never a mockup or an
-  invented result. It is regenerated whenever the analysis changes.
+- It shows a sample analysis of a made-up freelance contract. Until the
+  analysis works, the sample is written by hand and labeled as a
+  hand-written example. Every quoted sentence in it is checked in code as
+  an exact substring of the sample contract. Before launch it must be
+  replaced with Redline's real output, still labeled as a sample, and
+  regenerated whenever the analysis changes.
 - It says Redline is free during v1 and promises nothing about later
   pricing.
 - It doesn't name or compare itself to ClearSign or any other tool. It
@@ -115,8 +118,9 @@ the product: it says only what is true.
 - It includes the one-line "not a lawyer" disclaimer.
 - It ships on the default Vercel URL with a page title and description
   and no analytics.
-- It borrows its look from the results screen, which is designed first.
-  The product sets the visual style and the marketing page follows it.
+- One design direction covers both the landing page and the app shell,
+  so the marketing page can't set a look the product doesn't share. The
+  landing page is built first; the app shell follows that direction.
 - "Clean" is never presented as "safe" or as a legal guarantee
   ([ADR 0005](docs/adr/0005-clean-documents-are-a-real-output.md)).
 - Severity is described as an order only: flags ranked by how far a

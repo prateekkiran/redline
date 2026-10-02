@@ -1,0 +1,83 @@
+:root {
+  --cloth: #6e1418;
+  --cloth-deep: #4e0e11;
+  --cloth-ink: #e6c9c4;
+  --page: #f6f7f4;
+  --ink: #17181b;
+  --ink-muted: #55575c;
+  --rule: #c9cbc6;
+  --rubric: #c4231a;
+
+  --serif: var(--font-cardo), "Iowan Old Style", Georgia, serif;
+  --sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+
+  --step: 8px;
+  --leaf-max: 1180px;
+
+  color-scheme: light;
+  scrollbar-color: var(--cloth-ink) var(--cloth-deep);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--cloth);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--rubric);
+}
+
+::selection {
+  background: var(--cloth);
+  color: var(--page);
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul,
+dl,
+dd,
+blockquote,
+figure {
+  margin: 0;
+}
+
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--rubric);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

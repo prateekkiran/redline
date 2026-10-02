@@ -17,8 +17,10 @@ database, deployed on Vercel. All model calls go through OpenRouter. The
 uploaded file is parsed in the browser; only extracted text reaches the
 server.
 
-Undecided: package manager, and whether the user or the agent provisions the
-Supabase project and OpenRouter key.
+Package manager: pnpm.
+
+Undecided: whether the user or the agent provisions the Supabase project and
+OpenRouter key.
 
 ## Users
 
@@ -58,7 +60,7 @@ differentiate enough is unvalidated.
 ## Operating Context
 
 - Input is a text-based PDF of a freelance agreement or general contract
-  (DOCX planned). Scanned documents are refused; there is no OCR, because a
+  (DOCX planned), or the contract's text pasted in. Scanned documents are refused; there is no OCR, because a
   misread sentence would make its citation worthless.
 - Leases and terms-of-service documents are rejected in the browser before
   any analysis, with a plain "not supported in v1" message.
@@ -84,8 +86,9 @@ counter-offer per flag, document-only Q&A, editable red lines, saved library.
   the results footer; never inside a flag.
 - Free during v1, with no promise about later pricing. No payments.
 - A public landing page for signed-out visitors describes the six
-  capabilities and is not a seventh. It shows a labeled sample of real
-  output on a fictional contract, names no competitor, and has no
+  capabilities and is not a seventh. It shows a labeled sample analysis
+  of a fictional contract (hand-written until the analysis works, real
+  output before launch), names no competitor, and has no
   analytics.
 - "Clean" is a real result, never padded with a minimum flag count
   (ADR 0005). It does not mean "safe" and is not a legal guarantee.
