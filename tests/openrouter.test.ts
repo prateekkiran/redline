@@ -62,6 +62,7 @@ describe("createOpenRouterClient request", () => {
       allow_fallbacks: false,
       require_parameters: true,
       data_collection: "deny",
+      zdr: true,
     });
     expect(body.reasoning).toEqual({ effort: "low" });
     expect(body.response_format).toEqual({

@@ -3,9 +3,9 @@
  * nothing else talks to a model, and nothing talks to a provider's own API.
  *
  * Privacy rests on the `provider` block below: requests are pinned to a
- * single provider with fallbacks off and `data_collection: "deny"`, which
- * tells OpenRouter to route only to providers that don't keep or train on
- * prompts. The landing page's privacy statement depends on it, so it is set
+ * single provider with fallbacks off, `data_collection: "deny"` (only
+ * providers that don't store or train on user data) and `zdr: true` (only
+ * endpoints with a Zero Data Retention policy). The landing page's privacy statement depends on it, so it is set
  * once, here, and not per call site.
  */
 
@@ -16,6 +16,9 @@ export const PROVIDER_ROUTING = {
   allow_fallbacks: false,
   require_parameters: true,
   data_collection: "deny",
+  // Stricter than data_collection: only endpoints with a Zero Data
+  // Retention policy (OpenRouter provider-routing docs, checked 2026-10-02).
+  zdr: true,
 } as const;
 
 export const REASONING = { effort: "low" } as const;

@@ -1,0 +1,266 @@
+/* The document screen: adding a document, and the result set as an edition
+   (number column, text column, outer margin for glosses). */
+
+/* Non-clause content aligns with the text column: 48px numbers + 40px gutter. */
+.text {
+  margin-left: calc(48px + 40px);
+  max-width: 600px;
+}
+
+.title {
+  margin-top: 36px;
+  font-weight: 400;
+  font-size: clamp(28px, 2.6vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  margin-top: 14px;
+  max-width: 36em;
+}
+
+/* Adding a document */
+
+.add,
+.upload {
+  margin-top: 32px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.paste {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--ink-muted);
+  border-radius: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.paste:focus-visible {
+  outline: 2px solid var(--rubric);
+  outline-offset: 3px;
+}
+
+.apparatus {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  margin-top: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+
+.action,
+.fileAction {
+  flex: none;
+  display: inline-block;
+  padding: 15px 24px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--page);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 160ms linear;
+}
+
+.action:hover,
+.fileAction:hover {
+  background: var(--cloth);
+}
+
+.action:focus-visible,
+.fileAction:focus-within {
+  outline: 2px solid var(--rubric);
+  outline-offset: 3px;
+}
+
+/* The native input stays in the accessibility tree; its label is the button. */
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.note {
+  flex: 1 1 16em;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.error {
+  margin-top: 28px;
+  padding-left: 14px;
+  border-left: 2px solid var(--rubric);
+  max-width: 36em;
+}
+
+/* Waiting: a plain statement, no progress bar or spinner. */
+
+.state {
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+
+.stateHead {
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.stateBody {
+  margin-top: 8px;
+  max-width: 36em;
+}
+
+/* The result */
+
+.reference {
+  margin-top: 28px;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.result .title {
+  margin-top: 6px;
+}
+
+.summary {
+  margin-top: 14px;
+  max-width: 36em;
+  white-space: pre-line;
+}
+
+.documentSection {
+  margin-top: 40px;
+}
+
+.sectionHead {
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+/* Edition grid: the numbered document on the left, the outer margin on the
+   right where flags will hang as glosses. */
+.edition {
+  display: grid;
+  grid-template-columns: minmax(0, calc(48px + 40px + 600px)) minmax(260px, 1fr);
+  column-gap: 40px;
+  margin-top: 18px;
+}
+
+.lines {
+  grid-column: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  column-gap: 40px;
+  padding-bottom: 6px;
+}
+
+.blank {
+  height: 14px;
+}
+
+.num {
+  padding-top: 0.12em;
+  font-size: 15px;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+.lineText {
+  max-width: 62ch;
+  overflow-wrap: anywhere;
+}
+
+.margin {
+  grid-column: 2;
+}
+
+.footer {
+  margin-top: 40px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.footerLine {
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.footer .apparatus {
+  margin-top: 22px;
+}
+
+@media (max-width: 899px) {
+  .text {
+    margin-left: 0;
+  }
+
+  .title {
+    margin-top: 24px;
+  }
+
+  .edition {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .margin {
+    grid-column: 1;
+  }
+
+  .line {
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+
+  .apparatus {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .action,
+  .fileAction {
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .fileAction {
+    transition: none;
+  }
+}
