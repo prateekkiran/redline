@@ -1,0 +1,213 @@
+/* Sign-in and sign-up: one leaf on the landing page's cloth. The form sits
+   in the text column, 88px in, like every non-clause block in the edition. */
+
+.cloth {
+  min-height: 100vh;
+  padding: 0 24px 40px;
+}
+
+.band {
+  max-width: var(--leaf-max);
+  margin: 0 auto;
+  padding: 22px 0 20px;
+  color: var(--page);
+}
+
+.band :focus-visible {
+  outline-color: var(--page);
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.leaf {
+  max-width: var(--leaf-max);
+  margin: 0 auto;
+  padding: 28px 56px 48px;
+  background: var(--page);
+}
+
+.runningHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.title,
+.lede,
+.form,
+.switch,
+.sent,
+.leaf > .actions {
+  margin-left: calc(48px + 40px);
+  max-width: 600px;
+}
+
+.title {
+  margin-top: 36px;
+  font-weight: 400;
+  font-size: clamp(28px, 2.6vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  margin-top: 14px;
+  max-width: 34em;
+}
+
+.form {
+  display: grid;
+  gap: 22px;
+  max-width: 420px;
+  margin-top: 28px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--ink-muted);
+  border-radius: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+}
+
+.input:focus-visible {
+  outline-offset: 0;
+  border-color: var(--ink);
+}
+
+.note {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  color: var(--ink-muted);
+}
+
+.error {
+  padding-left: 12px;
+  border-left: 1px solid var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.actions {
+  margin-top: 28px;
+}
+
+.form .actions {
+  margin-top: 4px;
+  padding-top: 22px;
+  border-top: 1px solid var(--ink);
+}
+
+.action {
+  display: inline-block;
+  padding: 15px 24px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--page);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms linear;
+}
+
+.action:hover {
+  background: var(--cloth);
+}
+
+.action:disabled {
+  cursor: progress;
+  background: var(--ink-muted);
+}
+
+.switch {
+  margin-top: 28px;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.switch a {
+  color: var(--ink);
+}
+
+.sent {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+
+.sentHead {
+  margin-bottom: 8px;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+@media (max-width: 899px) {
+  .cloth {
+    padding: 0 10px 24px;
+  }
+
+  .band {
+    padding: 16px 6px 14px;
+  }
+
+  .wordmark {
+    font-size: 24px;
+  }
+
+  .leaf {
+    padding: 20px 18px 32px;
+  }
+
+  .runningHead {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .title,
+  .lede,
+  .form,
+  .switch,
+  .sent,
+  .leaf > .actions {
+    margin-left: 0;
+  }
+
+  .title {
+    margin-top: 24px;
+  }
+
+  .form .action {
+    width: 100%;
+  }
+}
