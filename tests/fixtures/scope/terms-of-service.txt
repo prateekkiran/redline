@@ -1,0 +1,29 @@
+TERMS OF SERVICE
+
+Last updated: August 20, 2026
+
+Welcome to Tallyfin, a budgeting app and website operated by Tallyfin Labs Inc. (a fictional company). These Terms of Service ("Terms") govern your access to and use of our website, mobile app, and related services (together, the "Service").
+
+1. Acceptance of These Terms. By using the Service you agree to be bound by these Terms and by our Privacy Policy. By accessing or creating an account, you confirm that you are at least 16 years old. If you do not agree to these Terms, do not use the Service.
+
+2. Changes to These Terms. We may change these Terms at any time. If we make material changes, we will notify you by email or through the Service. Your continued use of the Service after the changes take effect means you accept the revised Terms.
+
+3. Your User Account. You need a user account to use most features of the Service. You are responsible for keeping your password secure and for all activity under your user account. Notify us at once if you believe your user account has been used without permission.
+
+4. Subscriptions and Billing. Some features require a paid subscription. Subscriptions renew automatically at the end of each billing period unless you cancel before the renewal date. Fees are non-refundable except where required by law.
+
+5. Acceptable Use. You agree not to misuse the Service, including by attempting to access it through any method other than the interfaces we provide, interfering with its operation, reverse engineering it, or using it to violate any law.
+
+6. Your Content. You keep ownership of the data you upload to the Service. You grant Tallyfin Labs a worldwide, royalty-free license to host, store, and process that content as needed to operate and improve the Service.
+
+7. Privacy. Our Privacy Policy explains how we collect, use, and share information about you when you use the Service. By using the Service you agree that we may use that information as described in the Privacy Policy.
+
+8. Termination. We may suspend or terminate your access to the Service at any time, with or without notice, if we believe you have violated these Terms. You may stop using the Service and delete your user account at any time.
+
+9. Disclaimers. The Service is provided "as is" and "as available" without warranties of any kind. Tallyfin is not a financial advisor, and nothing in the Service is financial advice.
+
+10. Limitation of Liability. To the fullest extent permitted by law, Tallyfin Labs will not be liable for any indirect, incidental, or consequential damages arising from your use of the Service, and our total liability will not exceed the amount you paid us in the twelve months before the claim.
+
+11. Dispute Resolution. Any dispute arising from these Terms or the Service will be resolved by binding individual arbitration, and you waive any right to participate in a class action.
+
+12. Contact. Questions about these Terms of Service can be sent to legal@tallyfin.example.

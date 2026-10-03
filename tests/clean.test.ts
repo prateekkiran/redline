@@ -65,6 +65,9 @@ function allFixtureNames(dir = FIXTURES, prefix = ""): string[] {
   for (const entry of readdirSync(dir).sort()) {
     const full = path.join(dir, entry);
     if (statSync(full).isDirectory()) {
+      // scope/ holds leases and terms of service: the scope gate rejects them
+      // before analysis, so they have no sidecar and never reach the model.
+      if (prefix === "" && entry === "scope") continue;
       names.push(...allFixtureNames(full, `${prefix}${entry}/`));
     } else if (entry.endsWith(".txt")) {
       names.push(`${prefix}${entry.slice(0, -".txt".length)}`);
