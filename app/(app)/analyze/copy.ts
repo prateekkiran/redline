@@ -45,6 +45,13 @@ export const copy = {
       `Flag ${rank} of ${total}, ${where.toLowerCase()}`,
     marginLabel: "Flags, in ranked order",
   },
+  counterOffer: {
+    heading: "Ask for this instead",
+    copy: "Copy",
+    copyLabel: (rank: number) => `Copy counter-offer ${rank}`,
+    copied: "Copied.",
+    failed: "Couldn’t copy. Select the text above and copy it yourself.",
+  },
   clean: {
     note: "No flags. Redline found no clause in this document that reaches past the job.",
     footnote: "Redline can miss a clause. No flags doesn’t mean the contract is fair, or that you should sign it.",

@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { AnalysisResult, Flag } from "@/lib/analysis";
 import { documentLines } from "@/lib/document/lines";
 import { placeFlags, segmentLine, type Mark } from "@/lib/document/marks";
 import s from "./analyze.module.css";
+import { copyText, type CopyOutcome } from "./clipboard";
 import { copy } from "./copy";
 
 type Props = {
@@ -19,6 +20,9 @@ const WIDE = "(min-width: 900px)";
 const GLOSS_GAP = 16;
 
 type Leader = { d: string; key: number } | null;
+type Copied = { key: string; outcome: CopyOutcome } | null;
+
+const COPIED_FOR_MS = 2500;
 
 /**
  * The result of one analysis: the summary, then the document set on the
@@ -43,6 +47,8 @@ export function Result({ documentText, result, source, onReset }: Props) {
   const clean = result.flags.length === 0;
   const [active, setActive] = useState<number | null>(marks.length ? 1 : null);
   const [leader, setLeader] = useState<Leader>(null);
+  const [copied, setCopied] = useState<Copied>(null);
+  const copiedTimer = useRef<number | undefined>(undefined);
 
   const editionRef = useRef<HTMLDivElement>(null);
   const marginRef = useRef<HTMLDivElement>(null);
@@ -119,6 +125,25 @@ export function Result({ documentText, result, source, onReset }: Props) {
     return () => window.removeEventListener("resize", relayout);
   }, [hang, drawLeader]);
 
+  // A status line under a counter-offer changes the gloss's height, so the
+  // margin is hung again whenever one appears or clears.
+  useLayoutEffect(() => {
+    hang();
+    drawLeader();
+  }, [copied, hang, drawLeader]);
+
+  useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
+
+  const copyCounterOffer = async (key: string, text: string) => {
+    window.clearTimeout(copiedTimer.current);
+    const outcome = await copyText(text, navigator.clipboard);
+    setCopied({ key, outcome });
+    // The confirmation clears itself; the failure stays so it can be read.
+    if (outcome === "copied") {
+      copiedTimer.current = window.setTimeout(() => setCopied(null), COPIED_FOR_MS);
+    }
+  };
+
   const select = (rank: number) => () => setActive(rank);
   const flagOf = (m: Mark): Flag => result.flags[m.index];
   const lineRef = (m: Mark) =>
@@ -158,6 +183,23 @@ export function Result({ documentText, result, source, onReset }: Props) {
           </span>
         </p>
         <p className={s.reading}>{flagOf(m).description}</p>
+        <div className={s.variant}>
+          <p className={s.variantHead}>{copy.counterOffer.heading}</p>
+          <p className={s.variantText}>{flagOf(m).counterOffer}</p>
+          <div className={s.copyRow}>
+            <button
+              type="button"
+              className={s.copyButton}
+              aria-label={copy.counterOffer.copyLabel(m.rank)}
+              onClick={() => void copyCounterOffer(`${where}-${m.rank}`, flagOf(m).counterOffer)}
+            >
+              {copy.counterOffer.copy}
+            </button>
+            <span role="status" aria-live="polite" className={s.copyStatus}>
+              {copied?.key === `${where}-${m.rank}` ? copy.counterOffer[copied.outcome] : ""}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
