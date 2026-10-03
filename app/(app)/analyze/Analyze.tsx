@@ -7,13 +7,14 @@ import type { AnalysisResult } from "@/lib/analysis";
 import type { SaveStatus } from "@/lib/library/save-status";
 import s from "./analyze.module.css";
 import { copy, refusal } from "./copy";
+import { fileKind, UPLOAD_ACCEPT } from "@/lib/extract/kind";
 import { submitDocument } from "./prepare";
 import { Result } from "./Result";
 
 type Phase =
   | { kind: "input" }
   | { kind: "extracting"; fileName: string }
-  | { kind: "analyzing"; fromPdf: boolean }
+  | { kind: "analyzing"; fromFile: boolean }
   | {
       kind: "result";
       documentText: string;
@@ -23,8 +24,8 @@ type Phase =
     };
 
 /**
- * Add a document, then read the result. The PDF is parsed here, in the
- * browser; only the text it yields is posted to the server.
+ * Add a document, then read the result. A PDF or .docx is parsed here, in
+ * the browser; only the text it yields is posted to the server.
  */
 export function Analyze() {
   const [phase, setPhase] = useState<Phase>({ kind: "input" });
@@ -34,11 +35,11 @@ export function Analyze() {
   const pasteId = useId();
   const uploadNoteId = useId();
 
-  async function analyze(documentText: string, source: string, fromPdf = false) {
+  async function analyze(documentText: string, source: string, fromFile = false) {
     const outcome = await submitDocument(documentText, {
       onSend: () => {
         setError(null);
-        setPhase({ kind: "analyzing", fromPdf });
+        setPhase({ kind: "analyzing", fromFile });
       },
     });
     if ("kind" in outcome) {
@@ -60,16 +61,35 @@ export function Analyze() {
   async function onFile(file: File | undefined) {
     if (!file) return;
     if (fileRef.current) fileRef.current.value = "";
+    const kind = fileKind(file);
+    if (kind === "unsupported") {
+      setPhase({ kind: "input" });
+      setError(copy.unsupported);
+      return;
+    }
     setError(null);
     setPhase({ kind: "extracting", fileName: file.name });
-    // Loaded on demand so pdf.js never reaches the server bundle.
-    const { extractPdfText, PdfExtractError } = await import("@/lib/extract/pdf");
+    // Each extractor is loaded on demand, so neither pdf.js nor mammoth is in
+    // the initial bundle or the server bundle. Only the extracted text goes
+    // on to submitDocument; the file itself is never sent.
+    if (kind === "pdf") {
+      const { extractPdfText, PdfExtractError } = await import("@/lib/extract/pdf");
+      try {
+        const { text, pageCount } = await extractPdfText(file);
+        await analyze(text, copy.fromPdf(file.name, pageCount), true);
+      } catch (err) {
+        setPhase({ kind: "input" });
+        setError(err instanceof PdfExtractError ? copy.pdf[err.reason] : copy.pdf.unreadable);
+      }
+      return;
+    }
+    const { extractDocxFile, DocxExtractError } = await import("@/lib/extract/docx");
     try {
-      const { text, pageCount } = await extractPdfText(file);
-      await analyze(text, copy.fromPdf(file.name, pageCount), true);
+      const text = await extractDocxFile(file);
+      await analyze(text, copy.fromDocx(file.name), true);
     } catch (err) {
       setPhase({ kind: "input" });
-      setError(err instanceof PdfExtractError ? copy.pdf[err.reason] : copy.pdf.unreadable);
+      setError(err instanceof DocxExtractError ? copy.docx[err.reason] : copy.docx.unreadable);
     }
   }
 
@@ -101,8 +121,8 @@ export function Analyze() {
           <p className={s.stateBody}>
             {phase.kind === "extracting"
               ? copy.extracting(phase.fileName)
-              : phase.fromPdf
-                ? copy.analyzingBodyPdf
+              : phase.fromFile
+                ? copy.analyzingBodyFile
                 : copy.analyzingBody}
           </p>
         </section>
@@ -140,7 +160,7 @@ export function Analyze() {
                 <input
                   ref={fileRef}
                   type="file"
-                  accept=".pdf,application/pdf"
+                  accept={UPLOAD_ACCEPT}
                   className={s.fileInput}
                   aria-describedby={uploadNoteId}
                   onChange={(e) => void onFile(e.target.files?.[0])}

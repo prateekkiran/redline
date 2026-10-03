@@ -59,8 +59,8 @@ differentiate enough is unvalidated.
 
 ## Operating Context
 
-- Input is a text-based PDF of a freelance agreement or general contract
-  (DOCX planned), or the contract's text pasted in. Scanned documents are refused; there is no OCR, because a
+- Input is a text-based PDF or a Word (.docx) file of a freelance agreement or
+  general contract, or the contract's text pasted in. Scanned documents are refused; there is no OCR, because a
   misread sentence would make its citation worthless.
 - Leases and terms-of-service documents are rejected in the browser before
   any analysis, with a plain "not supported in v1" message.

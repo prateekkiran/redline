@@ -1,6 +1,7 @@
 /** Reader-facing copy for the document screen (run through the humanizer). */
 
 import { MAX_DOCUMENT_CHARS } from "@/lib/analysis/limits";
+import type { DocxExtractErrorReason } from "@/lib/extract/docx";
 import type { PdfExtractErrorReason } from "@/lib/extract/pdf";
 import type { RefusalReason } from "./prepare";
 
@@ -9,16 +10,16 @@ const limit = MAX_DOCUMENT_CHARS.toLocaleString("en-US");
 export const copy = {
   heading: "Read a contract before you sign it",
   lede:
-    "Paste the text of a freelance agreement or general contract, or upload a PDF you can select text in. Redline quotes back each sentence that reaches past the job you’re being hired for, ranks them, and drafts a counter-offer for each.",
+    "Paste the text of a freelance agreement or general contract, or upload it as a PDF or Word (.docx) file. Redline quotes back each sentence that reaches past the job you’re being hired for, ranks them, and drafts a counter-offer for each.",
   pasteLabel: "Paste the contract’s text",
   pasteButton: "Read this contract",
-  uploadLabel: "Or upload a PDF",
-  uploadButton: "Choose a PDF",
-  uploadNote: "Use a PDF you can select text in. Redline can’t read scans or photos of pages.",
-  extracting: (name: string) => `Pulling the text out of ${name}. The PDF stays on this device.`,
+  uploadLabel: "Or upload a PDF or Word (.docx) file",
+  uploadButton: "Choose a file",
+  uploadNote: "A PDF needs text you can select. Redline can’t read scans or photos of pages.",
+  extracting: (name: string) => `Pulling the text out of ${name}. The file stays on this device.`,
   analyzingHead: "Reading the contract",
   analyzingBody: "Keep this page open.",
-  analyzingBodyPdf: "Keep this page open. The PDF stayed on this device; only its text was sent.",
+  analyzingBodyFile: "Keep this page open. The file stayed on this device; only its text was sent.",
   emptyPaste: "Paste the contract’s text first.",
   tooLong: `This is longer than Redline can read at once. The limit is ${limit} characters, about 40 pages. Paste a shorter document.`,
   outOfScope: {
@@ -35,9 +36,17 @@ export const copy = {
     no_text:
       "This PDF has no text Redline can read. It looks like a scan or a photo of pages. Redline doesn’t read scans, because a quote taken from a misread page can’t be trusted. Upload a PDF saved from the original, or paste the text.",
   } satisfies Record<PdfExtractErrorReason, string>,
+  unsupported: "Redline reads PDF and Word (.docx) files only. Save it as one of those, or paste the text.",
+  docx: {
+    not_docx: "Redline reads PDF and Word (.docx) files only. Save it as one of those, or paste the text.",
+    unreadable: "This Word file couldn’t be opened. It may be damaged. Save it again as .docx, or paste the text.",
+    no_text:
+      "This Word file has no text Redline can read. It may hold a scan or photos of pages, and Redline doesn’t read scans, because a quote taken from a misread page can’t be trusted. Paste the text instead.",
+  } satisfies Record<DocxExtractErrorReason, string>,
   summaryHeading: "Summary",
   documentHeading: "The document",
   fromPdf: (name: string, pages: number) => `From ${name}, ${pages} ${pages === 1 ? "page" : "pages"}`,
+  fromDocx: (name: string) => `From ${name}`,
   pasted: "Pasted text",
   reset: "Read another document",
   footer: "Redline isn’t a lawyer, and nothing here is legal advice.",

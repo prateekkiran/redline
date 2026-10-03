@@ -13,7 +13,7 @@ import { Questions } from "./Questions";
 type Props = {
   documentText: string;
   result: AnalysisResult;
-  /** Where the text came from: a PDF's name and page count, or a paste. */
+  /** Where the text came from: a file name (and page count for a PDF), or a paste. */
   source: string;
   /**
    * Whether this result is in the library. "unsaved" is said plainly near
