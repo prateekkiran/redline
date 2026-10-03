@@ -4,10 +4,20 @@
 
 **Blocked by:** 02 (Tracer bullet — upload a contract, get a plain-English summary)
 
-**Status:** ready-for-agent
+**Status:** done; the live check that real answers stay grounded waits on a working OPENROUTER_MODEL
 
-- [ ] `answerQuestion` returns `{ answer }` or `{ declined: true }`
-- [ ] A signed-in user can ask a question about the current document and see the answer or the decline
-- [ ] The decline is shown as a clear "your document doesn't say" message, not an error
-- [ ] Fixture set: one document paired with answerable and unanswerable questions
+- [x] `answerQuestion` returns `{ answer }` or `{ declined: true }`
+- [x] A signed-in user can ask a question about the current document and see the answer or the decline
+- [x] The decline is shown as a clear "your document doesn't say" message, not an error
+- [x] Fixture set: one document paired with answerable and unanswerable questions
 - [ ] Answerable questions get an answer; unanswerable questions get an explicit decline — a confident answer to an unanswerable question fails the test
+
+## Comments
+
+Built unattended on 2026-10-03. `answerQuestion` returns `{ answer, quote }` or
+`{ declined: true }`. The quote is an exact span cut from the document, and an answer
+whose supporting quote can't be found word for word comes back as a decline. The
+pipeline tests stub only the model call and cover answerable, unanswerable, fabricated
+quote and empty quote. The last criterion is unticked: it asks whether the real model
+declines unanswerable questions, and only `tests/live/qa.test.ts` can show that.
+Decline copy: "The document doesn't say. Redline only answers from what's written in it."

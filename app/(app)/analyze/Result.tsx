@@ -7,6 +7,7 @@ import { placeFlags, segmentLine, type Mark } from "@/lib/document/marks";
 import s from "./analyze.module.css";
 import { copyText, type CopyOutcome } from "./clipboard";
 import { copy } from "./copy";
+import { Questions } from "./Questions";
 
 type Props = {
   documentText: string;
@@ -290,6 +291,8 @@ export function Result({ documentText, result, source, onReset }: Props) {
           ) : null}
         </div>
       </section>
+
+      <Questions documentText={documentText} />
 
       <footer className={`${s.text} ${s.footer}`}>
         {clean && <p className={s.cleanFootnote}>{copy.clean.footnote}</p>}

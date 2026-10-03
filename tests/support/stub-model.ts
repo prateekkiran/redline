@@ -10,6 +10,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { CompleteJsonArgs, ModelClient } from "@/lib/analysis/openrouter";
 import {
+  ANSWER_SCHEMA_NAME,
   COUNTER_OFFERS_SCHEMA_NAME,
   FLAGS_SCHEMA_NAME,
   SUMMARY_SCHEMA_NAME,
@@ -33,6 +34,10 @@ export type Sidecar = {
   flags: SidecarFlag[];
   notes?: string;
   notFlagged?: string[];
+  questions?: {
+    answerable: { question: string; answer: string; supportingSentence: string }[];
+    unanswerable: string[];
+  };
 };
 
 export type Fixture = { name: string; text: string; sidecar: Sidecar };
@@ -73,7 +78,16 @@ export type StubOptions = {
    * model failing to draft one), instead of the sidecar's counter-offer.
    */
   emptyCounterOffers?: boolean;
+  /**
+   * The answer call answers every question confidently, quoting a sentence
+   * that is NOT in the document (the model inventing support).
+   */
+  fabricateAnswers?: boolean;
 };
+
+/** A plausible-sounding sentence that appears in no fixture. */
+export const FABRICATED_QUOTE =
+  "Client will pay interest of 1.5 percent per month on any invoice not paid within 30 days.";
 
 export function createStubModel(fixture: Fixture, options: StubOptions = {}): StubModel {
   const calls: StubCall[] = [];
@@ -102,6 +116,8 @@ export function createStubModel(fixture: Fixture, options: StubOptions = {}): St
                 : (fixture.sidecar.flags.find((f) => f.sentence === sentence)?.counterOffer ?? ""),
             })),
           } as T;
+        case ANSWER_SCHEMA_NAME:
+          return answerFromSidecar(fixture, args.user, options) as T;
         default:
           throw new Error(`Stub model has no reply for schema "${args.schemaName}"`);
       }
@@ -169,4 +185,28 @@ export function candidatesFromSidecar({ name, sidecar }: Fixture): StubCandidate
 /** The clause sentences a counter-offer follow-up request asks about. */
 export function sentencesAsked(user: string): string[] {
   return [...user.matchAll(/<sentence>([\s\S]*?)<\/sentence>/g)].map((m) => m[1]);
+}
+
+/** The question an answer request asks. */
+export function questionAsked(user: string): string {
+  return user.match(/<question>\n?([\s\S]*?)\n?<\/question>/)?.[1].trim() ?? "";
+}
+
+/**
+ * The model's structured answer for a sidecar question: the sidecar's answer
+ * and supporting sentence for an answerable one, answerable false for
+ * anything else (including the sidecar's unanswerable questions).
+ */
+function answerFromSidecar({ sidecar }: Fixture, user: string, options: StubOptions) {
+  const question = questionAsked(user);
+  if (options.fabricateAnswers) {
+    return {
+      answerable: true,
+      answer: "Yes, Client pays 1.5 percent interest a month on late invoices.",
+      supportingQuote: FABRICATED_QUOTE,
+    };
+  }
+  const known = sidecar.questions?.answerable.find((q) => q.question === question);
+  if (!known) return { answerable: false, answer: "", supportingQuote: "" };
+  return { answerable: true, answer: known.answer, supportingQuote: known.supportingSentence };
 }

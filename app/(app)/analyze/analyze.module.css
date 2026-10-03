@@ -440,6 +440,84 @@
   margin-top: 22px;
 }
 
+/* Questions: margin queries. The question in italic, the answer indented
+   beneath it, then its line reference and the quoted sentence. */
+
+.questions {
+  margin-top: 40px;
+}
+
+.questionsLede {
+  margin-top: 10px;
+  max-width: 36em;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.queries {
+  margin-top: 18px;
+  list-style: none;
+  padding: 0;
+}
+
+.queries:empty {
+  margin-top: 0;
+}
+
+.query {
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.query:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.queryQuestion {
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+.queryAnswer {
+  margin-top: 6px;
+  padding-left: 24px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.queryRef {
+  margin-top: 8px;
+}
+
+.queryPending {
+  margin-top: 14px;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+
+.queryPending:empty {
+  margin-top: 0;
+}
+
+.ask {
+  margin-top: 22px;
+}
+
+.questionField {
+  resize: vertical;
+}
+
+.action:disabled,
+.action:disabled:hover {
+  background: var(--ink-muted);
+  cursor: not-allowed;
+}
+
 @media (max-width: 899px) {
   .text {
     margin-left: 0;
@@ -481,6 +559,10 @@
 
   .inlineGloss:last-child {
     border-bottom: 1px solid var(--rule);
+  }
+
+  .queryAnswer {
+    padding-left: 14px;
   }
 
   .line {

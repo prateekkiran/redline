@@ -52,6 +52,16 @@ export const copy = {
     copied: "Copied.",
     failed: "Couldn’t copy. Select the text above and copy it yourself.",
   },
+  questions: {
+    heading: "Ask about this document",
+    lede: "Redline answers from this document only, and quotes the sentence each answer comes from.",
+    asked: "Questions you’ve asked",
+    label: "Your question",
+    ask: "Ask",
+    asking: "Looking for the answer in the document.",
+    declined: "The document doesn’t say. Redline only answers from what’s written in it.",
+    remaining: (n: number) => (n === 1 ? "1 character left" : `${n} characters left`),
+  },
   clean: {
     note: "No flags. Redline found no clause in this document that reaches past the job.",
     footnote: "Redline can miss a clause. No flags doesn’t mean the contract is fair, or that you should sign it.",

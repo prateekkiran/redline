@@ -36,3 +36,24 @@ describe("POST /api/analyze with accounts set up", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
+
+describe("POST /api/ask with accounts set up", () => {
+  it("returns 401 to a caller with no session, before any model call", async () => {
+    const { POST: ask } = await import("@/app/api/ask/route");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon");
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    getUser.mockResolvedValue({ data: { user: null } });
+
+    const res = await ask(
+      new Request("http://localhost/api/ask", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ documentText: "1.1 Contractor will build a website.", question: "When?" }),
+      }),
+    );
+    expect(res.status).toBe(401);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
