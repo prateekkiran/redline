@@ -10,6 +10,17 @@ import { buildFlags, countHedged, readCandidateList, type FlagDiagnostics } from
 import { ensureCounterOffers } from "./counter-offers";
 import { locateSentence } from "./citations";
 import {
+  buildRedLineHits,
+  MAX_RED_LINE_CHARS,
+  MAX_RED_LINES,
+  mergeRanked,
+  normalizeRedLines,
+  RED_LINE_CATEGORY,
+  unionRedLines,
+  type RedLineDiagnostics,
+  type RedLineHit,
+} from "./red-lines";
+import {
   ANSWER_SCHEMA,
   ANSWER_SCHEMA_NAME,
   ANSWER_SYSTEM,
@@ -22,14 +33,25 @@ import {
   FLAGS_SCHEMA_NAME,
   FLAGS_SYSTEM,
   flagsUserMessage,
+  RED_LINE_FLAGS_SCHEMA,
+  RED_LINE_FLAGS_SCHEMA_NAME,
+  RED_LINE_FLAGS_SYSTEM,
+  redLineFlagsUserMessage,
   SUMMARY_SCHEMA,
   SUMMARY_SCHEMA_NAME,
   SUMMARY_SYSTEM,
   summaryUserMessage,
 } from "./prompts";
 
-export { MAX_DOCUMENT_CHARS, ModelCallError };
-export type { FlagDiagnostics, ModelClient };
+export {
+  MAX_DOCUMENT_CHARS,
+  MAX_RED_LINE_CHARS,
+  MAX_RED_LINES,
+  ModelCallError,
+  normalizeRedLines,
+  RED_LINE_CATEGORY,
+};
+export type { FlagDiagnostics, ModelClient, RedLineDiagnostics };
 
 /**
  * One finding tied to exactly one clause and one cited source sentence
@@ -46,7 +68,14 @@ export type Flag = {
   category: string;
   /** "red-line" flags come from the user's own red lines (ADR 0006). */
   origin: "baseline" | "red-line";
+  /** On a "red-line" flag: the red line that raised it. */
   redLine?: string;
+  /**
+   * Every red line that hit this flag's sentence. On a baseline flag the
+   * red lines are attached here and nothing else about the flag changes
+   * (ADR 0006); on a red-line flag it includes `redLine`.
+   */
+  matchedRedLines?: string[];
 };
 
 export type AnalysisResult = {
@@ -81,28 +110,126 @@ export type AnalyzeDeps = {
    * proposed and why any were dropped. For scripts and logs; never shown
    * to the reader, and not part of the result.
    */
-  onDiagnostics?: (diagnostics: FlagDiagnostics) => void;
+  onDiagnostics?: (diagnostics: FlagDiagnostics & { redLines?: RedLineDiagnostics }) => void;
 };
 
+/**
+ * Summarises the document and flags its clauses. Red lines only add flags
+ * (ADR 0006): the baseline flags are detected exactly as they would be with
+ * no red lines (that call never sees them), then a separate call looks for
+ * clauses meeting the user's red lines and its verified hits are added on
+ * top. A hit on a sentence the baseline already flagged is attached to that
+ * flag rather than added again. No baseline flag is ever removed or changed.
+ */
 export async function analyzeDocument(
   documentText: string,
   redLines: string[],
   deps: AnalyzeDeps = {},
 ): Promise<AnalysisResult> {
   assertDocumentText(documentText);
-  // Red lines only add flags (ADR 0006); ticket 09 wires them in.
-  void redLines;
+  const lines = normalizeRedLines(redLines);
 
   const client = deps.client ?? createOpenRouterClient();
-  // Two independent calls, run side by side: the summary describes without
-  // judging, the flags call judges. Separate prompts keep each one honest
-  // and let ticket 04 tune flag detection without touching the summary.
-  const [summary, found] = await Promise.all([
+  // Independent calls, run side by side: the summary describes without
+  // judging, the flags call judges, and the red-line call (only when there
+  // are red lines) looks for the user's own lines. Separate prompts keep
+  // each one honest and keep the baseline blind to the red lines.
+  const [summary, found, hits] = await Promise.all([
     summarize(client, documentText),
     detectFlags(client, documentText),
+    lines.length > 0 ? detectRedLineHits(client, documentText, lines) : null,
   ]);
-  deps.onDiagnostics?.(found.diagnostics);
-  return { summary, flags: found.flags };
+
+  if (!hits) {
+    deps.onDiagnostics?.(found.diagnostics);
+    return { summary, flags: found.flags };
+  }
+  const merged = await addRedLineFlags(client, documentText, found.flags, hits);
+  deps.onDiagnostics?.({ ...found.diagnostics, redLines: merged.diagnostics });
+  return { summary, flags: merged.flags };
+}
+
+async function detectRedLineHits(
+  client: ModelClient,
+  documentText: string,
+  redLines: string[],
+): Promise<ReturnType<typeof buildRedLineHits>> {
+  const out = await client.completeJson<unknown>({
+    system: RED_LINE_FLAGS_SYSTEM,
+    user: redLineFlagsUserMessage(documentText, redLines),
+    schemaName: RED_LINE_FLAGS_SCHEMA_NAME,
+    schema: RED_LINE_FLAGS_SCHEMA,
+  });
+  const candidates = readCandidateList(out);
+  // A missing list fails the analysis rather than quietly showing a result
+  // with no red-line flags, which would read as "none of your red lines hit".
+  if (!candidates) {
+    throw new AnalysisOutputError("The model's red-line list was missing.");
+  }
+  return buildRedLineHits(documentText, redLines, candidates);
+}
+
+/**
+ * Baseline flags plus red-line flags. Baseline flags keep their content and
+ * relative order; a red-line hit on a baseline sentence only adds to that
+ * flag's matchedRedLines. New red-line flags go through the same
+ * counter-offer rule as baseline flags, then are ranked in by severity.
+ */
+async function addRedLineFlags(
+  client: ModelClient,
+  documentText: string,
+  baseline: Flag[],
+  found: ReturnType<typeof buildRedLineHits>,
+): Promise<{ flags: Flag[]; diagnostics: RedLineDiagnostics }> {
+  const flags = baseline.map((f) => ({ ...f }));
+  const bySentence = new Map<string, Flag[]>();
+  for (const f of flags) {
+    const list = bySentence.get(f.sourceSentence);
+    if (list) list.push(f);
+    else bySentence.set(f.sourceSentence, [f]);
+  }
+
+  let matchedBaseline = 0;
+  const fresh: RedLineHit[] = [];
+  for (const hit of found.hits) {
+    const same = bySentence.get(hit.sourceSentence);
+    if (same) {
+      matchedBaseline++;
+      for (const f of same) f.matchedRedLines = unionRedLines(f.matchedRedLines, hit.matchedRedLines);
+    } else {
+      fresh.push(hit);
+    }
+  }
+
+  const drafted = await ensureCounterOffers(fresh, (clauses) =>
+    client.completeJson<unknown>({
+      system: COUNTER_OFFERS_SYSTEM,
+      user: counterOffersUserMessage(documentText, clauses),
+      schemaName: COUNTER_OFFERS_SCHEMA_NAME,
+      schema: COUNTER_OFFERS_SCHEMA,
+    }),
+  );
+  const added: Flag[] = drafted.flags.map((h) => ({
+    sourceSentence: h.sourceSentence,
+    severity: h.severity,
+    description: h.description,
+    counterOffer: h.counterOffer,
+    category: RED_LINE_CATEGORY,
+    origin: "red-line",
+    redLine: h.redLine,
+    matchedRedLines: h.matchedRedLines,
+  }));
+
+  return {
+    flags: mergeRanked(flags, added),
+    diagnostics: {
+      ...found.diagnostics,
+      matchedBaseline,
+      counterOfferFollowUp: drafted.followUp,
+      missingCounterOffer: drafted.missing,
+      added: added.length,
+    },
+  };
 }
 
 async function detectFlags(

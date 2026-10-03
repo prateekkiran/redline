@@ -3,8 +3,12 @@ import {
   AnalysisOutputError,
   analyzeDocument,
   MAX_DOCUMENT_CHARS,
+  MAX_RED_LINE_CHARS,
+  MAX_RED_LINES,
   ModelCallError,
+  normalizeRedLines,
 } from "@/lib/analysis";
+import { listRedLines } from "@/lib/library/red-lines";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { deriveTitle, saveAnalysis } from "@/lib/library/repository";
@@ -15,6 +19,10 @@ export const maxDuration = 60;
 
 /**
  * POST { documentText, redLines? } -> AnalysisResult & SaveStatus.
+ *
+ * Red lines only add flags (ADR 0006). When the request leaves `redLines`
+ * out and the caller is signed in, their saved red lines are used. The red
+ * lines actually applied are the ones recorded with the saved entry.
  *
  * With accounts set up, a successful analysis is saved to the caller's
  * library (the extracted text, never a file) and the new id comes back as
@@ -48,10 +56,25 @@ export async function POST(request: Request): Promise<Response> {
   const parsed = readBody(body);
   if ("error" in parsed) return fail(400, parsed.error);
 
+  let redLines = parsed.redLines;
+  if (redLines === undefined) {
+    redLines = [];
+    if (supabase) {
+      try {
+        redLines = (await listRedLines(supabase)).map((r) => r.text);
+      } catch (err) {
+        // Running without them would read as "none of your red lines hit".
+        console.error("[analyze] red lines load failed", err instanceof Error ? err.message : typeof err);
+        return fail(500, "Your red lines couldn't be loaded, so Redline didn't read the document. Try again in a minute.");
+      }
+    }
+  }
+  redLines = normalizeRedLines(redLines);
+
   try {
-    const result = await analyzeDocument(parsed.documentText, parsed.redLines);
+    const result = await analyzeDocument(parsed.documentText, redLines);
     const save: SaveStatus = supabase
-      ? await saveToLibrary(supabase, parsed.documentText, parsed.redLines, result)
+      ? await saveToLibrary(supabase, parsed.documentText, redLines, result)
       : { saved: false, reason: "accounts not set up" };
     return Response.json({ ...result, ...save });
   } catch (err) {
@@ -95,7 +118,7 @@ async function saveToLibrary(
 
 function readBody(
   body: unknown,
-): { documentText: string; redLines: string[] } | { error: string } {
+): { documentText: string; redLines: string[] | undefined } | { error: string } {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return { error: "Send an object with the document's text." };
   }
@@ -106,7 +129,15 @@ function readBody(
   if (redLines !== undefined && !(Array.isArray(redLines) && redLines.every((r) => typeof r === "string"))) {
     return { error: "Red lines must be a list of text." };
   }
-  return { documentText, redLines: (redLines as string[] | undefined) ?? [] };
+  if (redLines !== undefined) {
+    if (redLines.length > MAX_RED_LINES) {
+      return { error: `Use up to ${MAX_RED_LINES} red lines.` };
+    }
+    if (redLines.some((r) => r.replace(/\s+/g, " ").trim().length > MAX_RED_LINE_CHARS)) {
+      return { error: `Keep each red line to ${MAX_RED_LINE_CHARS} characters or fewer.` };
+    }
+  }
+  return { documentText, redLines: redLines as string[] | undefined };
 }
 
 function fail(status: number, error: string): Response {

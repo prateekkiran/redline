@@ -11,10 +11,8 @@
  * stores and what it reads back.
  */
 
-import { readdirSync, readFileSync } from "node:fs";
-import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { PGlite, type Transaction } from "@electric-sql/pglite";
+import type { PGlite, Transaction } from "@electric-sql/pglite";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   deriveTitle,
@@ -24,23 +22,7 @@ import {
   type NewSavedAnalysis,
 } from "@/lib/library/repository";
 import { savedFixture } from "./support/saved-analysis";
-
-const MIGRATIONS = path.resolve(import.meta.dirname, "../supabase/migrations");
-
-const AUTH_SHIM = `
-  create schema auth;
-  create table auth.users (id uuid primary key, email text);
-  create function auth.uid() returns uuid language sql stable as $$
-    select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
-  $$;
-  create role anon nologin;
-  create role authenticated nologin;
-  grant usage on schema auth to anon, authenticated;
-  grant usage on schema public to anon, authenticated;
-  -- Supabase's default privileges, which the migration must revoke itself.
-  alter default privileges in schema public
-    grant all on tables to anon, authenticated;
-`;
+import { anon, as, createTestDb, runAs, type Who } from "./support/pglite-db";
 
 const DOC_COLUMNS = "id, title, created_at, document_text, summary, flags, red_lines";
 
@@ -48,19 +30,7 @@ let db: PGlite;
 const alice = randomUUID();
 const bob = randomUUID();
 
-type Who = { role: "authenticated"; uid: string } | { role: "anon" };
-const as = (uid: string): Who => ({ role: "authenticated", uid });
-const anon: Who = { role: "anon" };
-
-async function run<T>(who: Who, fn: (tx: Transaction) => Promise<T>): Promise<T> {
-  return db.transaction(async (tx) => {
-    await tx.exec(`set local role ${who.role}`);
-    if (who.role === "authenticated") {
-      await tx.query("select set_config('request.jwt.claim.sub', $1, true)", [who.uid]);
-    }
-    return fn(tx);
-  });
-}
+const run = <T,>(who: Who, fn: (tx: Transaction) => Promise<T>): Promise<T> => runAs(db, who, fn);
 
 function toDomainRow(row: Record<string, unknown>): DocumentRow {
   return { ...row, created_at: (row.created_at as Date).toISOString() } as DocumentRow;
@@ -119,12 +89,10 @@ const adhesionInput: NewSavedAnalysis = {
 };
 
 beforeAll(async () => {
-  db = new PGlite();
-  await db.exec(AUTH_SHIM);
-  await db.query("insert into auth.users (id, email) values ($1, 'alice@example.test'), ($2, 'bob@example.test')", [alice, bob]);
-  const files = readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort();
-  expect(files.length).toBeGreaterThan(0);
-  for (const file of files) await db.exec(readFileSync(path.join(MIGRATIONS, file), "utf8"));
+  db = await createTestDb([
+    { id: alice, email: "alice@example.test" },
+    { id: bob, email: "bob@example.test" },
+  ]);
 }, 30_000);
 
 afterAll(async () => {

@@ -13,6 +13,7 @@ import {
   ANSWER_SCHEMA_NAME,
   COUNTER_OFFERS_SCHEMA_NAME,
   FLAGS_SCHEMA_NAME,
+  RED_LINE_FLAGS_SCHEMA_NAME,
   SUMMARY_SCHEMA_NAME,
 } from "@/lib/analysis/prompts";
 import { NO_REACH, type OverreachAssessment } from "@/lib/analysis/severity";
@@ -83,6 +84,11 @@ export type StubOptions = {
    * that is NOT in the document (the model inventing support).
    */
   fabricateAnswers?: boolean;
+  /**
+   * The red-line call's candidates, in the model's structured shape
+   * (RED_LINE_FLAGS_SCHEMA). Default: none (the model finds no match).
+   */
+  redLineCandidates?: unknown[];
 };
 
 /** A plausible-sounding sentence that appears in no fixture. */
@@ -118,6 +124,8 @@ export function createStubModel(fixture: Fixture, options: StubOptions = {}): St
           } as T;
         case ANSWER_SCHEMA_NAME:
           return answerFromSidecar(fixture, args.user, options) as T;
+        case RED_LINE_FLAGS_SCHEMA_NAME:
+          return { flags: options.redLineCandidates ?? [] } as T;
         default:
           throw new Error(`Stub model has no reply for schema "${args.schemaName}"`);
       }

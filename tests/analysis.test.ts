@@ -37,11 +37,15 @@ describe("analyzeDocument summary", () => {
     expect(client.calls[0].user).toContain(adhesion.sidecar.flags[0].sentence);
   });
 
-  it("accepts red lines without changing the call count", async () => {
+  it("adds exactly one red-line call when there are red lines", async () => {
     const client = createStubModel(clean);
     const result = await analyzeDocument(clean.text, ["No non-competes"], { client });
     expect(result.summary.length).toBeGreaterThan(0);
-    expect(client.calls).toHaveLength(2);
+    expect(client.calls.map((c) => c.schemaName).sort()).toEqual([
+      "document_flags",
+      "document_summary",
+      "red_line_flags",
+    ]);
   });
 
   it("trims whitespace around the model's summary", async () => {

@@ -114,6 +114,12 @@ function readFlag(raw: unknown): Flag | null {
   if (typeof f.category !== "string") return null;
   if (f.origin !== "baseline" && f.origin !== "red-line") return null;
   if (f.redLine !== undefined && typeof f.redLine !== "string") return null;
+  if (
+    f.matchedRedLines !== undefined &&
+    !(Array.isArray(f.matchedRedLines) && f.matchedRedLines.every((r) => typeof r === "string"))
+  ) {
+    return null;
+  }
   const flag: Flag = {
     sourceSentence: f.sourceSentence,
     severity: f.severity,
@@ -123,6 +129,7 @@ function readFlag(raw: unknown): Flag | null {
     origin: f.origin,
   };
   if (typeof f.redLine === "string") flag.redLine = f.redLine;
+  if (Array.isArray(f.matchedRedLines)) flag.matchedRedLines = f.matchedRedLines as string[];
   return flag;
 }
 
