@@ -4,10 +4,18 @@
 
 **Blocked by:** 02 (Tracer bullet — upload a contract, get a plain-English summary)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Lease and terms-of-service fixtures are rejected in the browser with a clear "not supported in v1" message
-- [ ] A rejected document triggers no server request and no model call
-- [ ] Freelance-agreement and general-contract fixtures pass the gate
-- [ ] The message says plainly that leases and terms of service aren't supported, without implying broader support
-- [ ] Tests cover both rejection and pass-through cases
+- [x] Lease and terms-of-service fixtures are rejected in the browser with a clear "not supported in v1" message
+- [x] A rejected document triggers no server request and no model call
+- [x] Freelance-agreement and general-contract fixtures pass the gate
+- [x] The message says plainly that leases and terms of service aren't supported, without implying broader support
+- [x] Tests cover both rejection and pass-through cases
+
+## Comments
+
+Built unattended on 2026-10-03. `lib/scope/gate.ts` uses weighted phrase counts. It
+rejects only when the lease or ToS score is at least 15 and at least twice the contract
+score, so a freelance job for a landlord still passes. The order is: empty check, then the
+scope gate, then the length check. A test with a fetch spy shows that refused documents
+make zero requests.

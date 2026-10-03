@@ -3,10 +3,9 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import type { AnalysisResult } from "@/lib/analysis";
-import { checkDocumentText } from "@/lib/analysis/limits";
 import s from "./analyze.module.css";
-import { copy } from "./copy";
-import { requestAnalysis } from "./request";
+import { copy, refusal } from "./copy";
+import { submitDocument } from "./prepare";
 import { Result } from "./Result";
 
 type Phase =
@@ -28,16 +27,16 @@ export function Analyze() {
   const uploadNoteId = useId();
 
   async function analyze(documentText: string, source: string, fromPdf = false) {
-    const problem = checkDocumentText(documentText);
-    if (problem) {
+    const outcome = await submitDocument(documentText, {
+      onSend: () => {
+        setError(null);
+        setPhase({ kind: "analyzing", fromPdf });
+      },
+    });
+    if ("kind" in outcome) {
       setPhase({ kind: "input" });
-      setError(problem === "empty" ? copy.emptyPaste : copy.tooLong);
-      return;
-    }
-    setError(null);
-    setPhase({ kind: "analyzing", fromPdf });
-    const outcome = await requestAnalysis(documentText);
-    if (outcome.ok) {
+      setError(refusal[outcome.reason]);
+    } else if (outcome.ok) {
       setPhase({ kind: "result", documentText, result: outcome.result, source });
     } else {
       setPhase({ kind: "input" });

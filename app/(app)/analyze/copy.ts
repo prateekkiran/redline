@@ -2,6 +2,7 @@
 
 import { MAX_DOCUMENT_CHARS } from "@/lib/analysis/limits";
 import type { PdfExtractErrorReason } from "@/lib/extract/pdf";
+import type { RefusalReason } from "./prepare";
 
 const limit = MAX_DOCUMENT_CHARS.toLocaleString("en-US");
 
@@ -20,6 +21,12 @@ export const copy = {
   analyzingBodyPdf: "Keep this page open. The PDF stayed on this device; only its text was sent.",
   emptyPaste: "Paste the contract’s text first.",
   tooLong: `This is longer than Redline can read at once. The limit is ${limit} characters, about 40 pages. Paste a shorter document.`,
+  outOfScope: {
+    lease:
+      "This looks like a lease, and Redline doesn’t read leases. It reads freelance agreements and general contracts only. Nothing has left this device.",
+    "terms-of-service":
+      "This looks like a terms of service, and Redline doesn’t read terms of service. It reads freelance agreements and general contracts only. Nothing has left this device.",
+  },
   pdf: {
     not_pdf: "That isn’t a PDF. Upload a PDF, or paste the text instead.",
     password:
@@ -66,4 +73,12 @@ export const copy = {
     note: "No flags. Redline found no clause in this document that reaches past the job.",
     footnote: "Redline can miss a clause. No flags doesn’t mean the contract is fair, or that you should sign it.",
   },
+};
+
+/** The message for each document refused in the browser, before any request. */
+export const refusal: Record<RefusalReason, string> = {
+  empty: copy.emptyPaste,
+  too_long: copy.tooLong,
+  lease: copy.outOfScope.lease,
+  "terms-of-service": copy.outOfScope["terms-of-service"],
 };
