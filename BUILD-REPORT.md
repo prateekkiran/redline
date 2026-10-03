@@ -3,6 +3,30 @@
 Unattended build of Redline v1 from the tickets in `.scratch/v1/issues/`.
 This file is written as the build runs; the final sections are filled in at the end.
 
+## Next step (handoff, 2026-10-03)
+
+Start here. Everything is committed and pushed to `main`.
+
+1. **Finish the live checks.** The model works (`OPENROUTER_MODEL=qwen/qwen3.8-27b:free`,
+   `OPENROUTER_PROVIDER=modelrun`, both in `.env.local`). The run stopped on the free tier's
+   daily limit, not on a failure. Once the limit has reset (or after adding $10 of OpenRouter
+   credit), run:
+   ```sh
+   pnpm smoke        # want: "0 hedged descriptions" in its summary line
+   pnpm test:live    # the IP pair, narrow pairs, six categories every run, no hedging
+   ```
+   If hedging survives the tightened prompt (`lib/analysis/prompts.ts`), change the model. If
+   a live check fails on substance, fix it and tick that box in its ticket.
+2. **Create the Supabase project.** Add `NEXT_PUBLIC_SUPABASE_URL` and
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` to `.env.local`. Run the two migrations in
+   `supabase/migrations/` in order. Then `pnpm dev`: sign up, analyse, and check `/library`
+   and `/red-lines`. After that, run `pnpm exec tsx scripts/check-library.ts <email> <password>`.
+3. **Set the five variables on Vercel** (`OPENROUTER_API_KEY`, `OPENROUTER_MODEL`,
+   `OPENROUTER_PROVIDER`, and the two Supabase ones) with `vercel env add`. Then redeploy.
+4. **Before launch:** swap the landing page's hand-written sample for real
+   `analyzeDocument` output, add DOCX to its copy (humanizer pass), and settle CLAUDE.md's
+   "credential provisioning" item.
+
 ## Ticket status
 
 | Ticket | Status | What's still open |
