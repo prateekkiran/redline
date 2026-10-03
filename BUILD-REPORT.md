@@ -37,6 +37,12 @@ only because the configured model can't be reached (decision 8).
   **2 of the 7 descriptions contained a hedge word.** They were kept, as designed, but that
   breaks ADR 0004's "no hedging" for this model. The prompt needs tightening, or the model
   needs changing.
+  **The prompt is now tighter (2026-10-03).** Both "may"s were the model describing what
+  *you* owe or could claim ("the amount you may owe", "claims you may have"), not a
+  permission the clause grants. The flag and red-line prompts now ban hedging words in
+  every sense, show before-and-after rewrites of exactly those patterns, and end with a
+  reread-and-replace step. Not yet checked against the model, because the daily free
+  quota was exhausted. The no-hedging check in `pnpm test:live` covers it.
 - `pnpm test:live`, run against the real model. **Passed:** counter-offers (present, distinct,
   each tied to its own clause), red-line monotonicity, Q&A (answers are grounded, and
   unanswerable questions are declined), the clean contract returning zero flags on every

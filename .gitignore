@@ -80,3 +80,4 @@ next-env.d.ts
 .impeccable/config.local.json
 .playwright-mcp/
 .env*
+.claude/scheduled_tasks.lock

@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "app/(app)/app.module.css"
+        ],
+        "createdAt": "2026-10-02T16:11:30.401Z",
+        "reason": "orchestrator: DESIGN.md L141/L199 prescribe a cloth-deep binding edge on the app shell's nav spine; full-height nav column, not a card"
+      }
+    ]
+  }
+}

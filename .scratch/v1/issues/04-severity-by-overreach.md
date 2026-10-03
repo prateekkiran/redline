@@ -60,3 +60,5 @@ they live in `tests/live/severity.test.ts`. Today they fail at the model 404 rec
 BUILD-REPORT.md.
 
 Live, 2026-10-03: broad arbitration outranked narrow on every run. The IP pair, the six-category coverage and the no-hedging check were cut off by the free-tier rate limit. One smoke run found all six categories, but 2 of its 7 descriptions were hedged.
+
+Hedging prompt tightened on 2026-10-03 after the smoke run's two "may"s. It waits on the live no-hedging check.
