@@ -1,7 +1,8 @@
 /**
- * The browser side of the analysis call. Only the document text (and the
- * reader's red lines) is sent, as JSON. The file never is: by the time this
- * runs the PDF has been read in the browser and dropped.
+ * The browser side of the analysis call. Only the document text is sent, as
+ * JSON. The file never is: by the time this runs the PDF has been read in the
+ * browser and dropped. The body has no `redLines` field on purpose: when it
+ * is left out, the server applies the reader's saved red lines (ticket 09).
  */
 
 import type { AnalysisResult } from "@/lib/analysis";
@@ -17,7 +18,6 @@ type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
 
 export async function requestAnalysis(
   documentText: string,
-  redLines: string[] = [],
   doFetch: FetchLike = (i, init) => fetch(i, init),
 ): Promise<AnalyzeOutcome> {
   let res: Response;
@@ -25,7 +25,7 @@ export async function requestAnalysis(
     res = await doFetch(ANALYZE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ documentText, redLines }),
+      body: JSON.stringify({ documentText }),
     });
   } catch {
     return { ok: false, status: 0, message: OFFLINE };

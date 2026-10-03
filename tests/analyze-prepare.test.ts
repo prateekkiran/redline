@@ -96,4 +96,17 @@ describe("submitDocument", () => {
       save: { saved: false, reason: "save failed" },
     });
   });
+
+  it("leaves redLines out of the body, so the server applies the saved list", async () => {
+    const bodies: Record<string, unknown>[] = [];
+    await submitDocument(read("adhesion-contract.txt"), {
+      doFetch: async (_url, init) => {
+        bodies.push(JSON.parse(init.body as string));
+        return new Response(JSON.stringify({ summary: "A deal.", flags: [] }), { status: 200 });
+      },
+    });
+    expect(bodies).toHaveLength(1);
+    expect(Object.keys(bodies[0])).toEqual(["documentText"]);
+    expect(bodies[0]).not.toHaveProperty("redLines");
+  });
 });

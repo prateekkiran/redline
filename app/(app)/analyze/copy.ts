@@ -60,6 +60,11 @@ export const copy = {
     label: (rank: number, total: number, where: string) =>
       `Flag ${rank} of ${total}, ${where.toLowerCase()}`,
     marginLabel: "Flags, in ranked order",
+    /** On a flag raised by one of the reader's red lines. */
+    yourRedLine: (text: string) => `Your red line: “${text}”`,
+    /** On a standard flag whose sentence also crosses the reader's red lines. */
+    alsoRedLines: (texts: string[]) =>
+      `Also crosses your red ${texts.length === 1 ? "line" : "lines"}: ${texts.map((x) => `“${x}”`).join(", ")}`,
   },
   counterOffer: {
     heading: "Ask for this instead",

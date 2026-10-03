@@ -44,6 +44,10 @@ export const libraryCopy = {
   saved: {
     source: (date: string) => `Saved to your library on ${date}`,
     back: "Back to the library",
+    readWith: (redLines: string[]) =>
+      redLines.length === 0
+        ? "Read with no red lines of yours."
+        : `Read with your red ${redLines.length === 1 ? "line" : "lines"}: ${redLines.map((x) => `“${x}”`).join(", ")}`,
   },
   remove: {
     open: "Delete this document",

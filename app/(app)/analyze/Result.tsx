@@ -20,6 +20,11 @@ type Props = {
    * the top, since leaving the page loses it; the rest sit in the footer.
    */
   saveNote?: { tone: "quiet" | "plain"; text: ReactNode };
+  /**
+   * A line under the source naming the red lines this result was read with.
+   * The library passes it; a fresh result doesn't need it.
+   */
+  readWith?: ReactNode;
   /** Footer controls. The document screen passes none and gets "Read another". */
   actions?: ReactNode;
   onReset?: () => void;
@@ -40,7 +45,7 @@ const COPIED_FOR_MS = 2500;
  * being read turns its sentence rubric. Below 900px the margin folds in and
  * each gloss sits beneath the line where its sentence ends.
  */
-export function Result({ documentText, result, source, saveNote, actions, onReset }: Props) {
+export function Result({ documentText, result, source, readWith, saveNote, actions, onReset }: Props) {
   const lines = useMemo(() => documentLines(documentText), [documentText]);
   const marks = useMemo(
     () => placeFlags(documentText, lines, result.flags),
@@ -191,6 +196,7 @@ export function Result({ documentText, result, source, saveNote, actions, onRese
             ]
           </span>
         </p>
+        <RedLineNote flag={flagOf(m)} />
         <p className={s.reading}>{flagOf(m).description}</p>
         <div className={s.variant}>
           <p className={s.variantHead}>{copy.counterOffer.heading}</p>
@@ -217,6 +223,7 @@ export function Result({ documentText, result, source, saveNote, actions, onRese
     <article className={s.result}>
       <section className={s.text} aria-labelledby="summary-heading">
         <p className={s.reference}>{source}</p>
+        {readWith ? <p className={s.readWith}>{readWith}</p> : null}
         {saveNote?.tone === "plain" && (
           <p className={s.unsaved} role="status">
             {saveNote.text}
@@ -325,6 +332,19 @@ export function Result({ documentText, result, source, saveNote, actions, onRese
       </footer>
     </article>
   );
+}
+
+/**
+ * Says whose flag this is when the reader's red lines are involved (ADR
+ * 0006). Only ever adds a line to a gloss; no flag is hidden or reordered.
+ */
+function RedLineNote({ flag }: { flag: Flag }) {
+  if (flag.origin === "red-line") {
+    const text = flag.redLine ?? flag.matchedRedLines?.[0];
+    return text ? <p className={s.mine}>{copy.flags.yourRedLine(text)}</p> : null;
+  }
+  const matched = flag.matchedRedLines?.filter((x) => x !== "") ?? [];
+  return matched.length > 0 ? <p className={s.mine}>{copy.flags.alsoRedLines(matched)}</p> : null;
 }
 
 function setRef<T>(map: Map<number, T>, key: number, el: T | null) {

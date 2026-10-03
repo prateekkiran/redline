@@ -16,9 +16,9 @@ function fakeFetch(status: number, body: unknown) {
 }
 
 describe("requestAnalysis", () => {
-  it("sends only the document text and red lines, as a JSON string", async () => {
+  it("sends only the document text, as a JSON string, with no redLines key", async () => {
     const { fn, calls } = fakeFetch(200, { summary: "A website deal.", flags: [] });
-    await requestAnalysis(adhesion.text, ["No non-competes"], fn);
+    await requestAnalysis(adhesion.text, fn);
 
     expect(calls).toHaveLength(1);
     expect(calls[0].url).toBe(ANALYZE_ENDPOINT);
@@ -27,9 +27,11 @@ describe("requestAnalysis", () => {
     // A string body: never FormData, a Blob or a File.
     expect(typeof calls[0].init.body).toBe("string");
     const body = JSON.parse(calls[0].init.body as string);
-    expect(Object.keys(body).sort()).toEqual(["documentText", "redLines"]);
+    // No `redLines` key: leaving it out is what tells the server to apply
+    // the reader's saved red lines.
+    expect(Object.keys(body)).toEqual(["documentText"]);
+    expect("redLines" in body).toBe(false);
     expect(body.documentText).toBe(adhesion.text);
-    expect(body.redLines).toEqual(["No non-competes"]);
   });
 
   it("returns the result on success, with whether it was saved", async () => {
@@ -39,7 +41,7 @@ describe("requestAnalysis", () => {
       saved: true,
       documentId: "6f1c1d0e-1a2b-4c3d-8e9f-0a1b2c3d4e5f",
     });
-    await expect(requestAnalysis("Some text.", [], fn)).resolves.toEqual({
+    await expect(requestAnalysis("Some text.", fn)).resolves.toEqual({
       ok: true,
       result: { summary: "A website deal.", flags: [] },
       save: { saved: true, documentId: "6f1c1d0e-1a2b-4c3d-8e9f-0a1b2c3d4e5f" },
@@ -48,7 +50,7 @@ describe("requestAnalysis", () => {
 
   it("reports a failed save without losing the result", async () => {
     const { fn } = fakeFetch(200, { summary: "A website deal.", flags: [], saved: false, reason: "save failed" });
-    const outcome = await requestAnalysis("Some text.", [], fn);
+    const outcome = await requestAnalysis("Some text.", fn);
     expect(outcome).toEqual({
       ok: true,
       result: { summary: "A website deal.", flags: [] },
@@ -58,7 +60,7 @@ describe("requestAnalysis", () => {
 
   it("passes the server's plain message through on failure", async () => {
     const { fn } = fakeFetch(422, { error: "There's no text to read." });
-    await expect(requestAnalysis("x", [], fn)).resolves.toEqual({
+    await expect(requestAnalysis("x", fn)).resolves.toEqual({
       ok: false,
       status: 422,
       message: "There's no text to read.",
@@ -69,7 +71,7 @@ describe("requestAnalysis", () => {
     const fn = async () => {
       throw new TypeError("Failed to fetch");
     };
-    const out = await requestAnalysis("x", [], fn);
+    const out = await requestAnalysis("x", fn);
     expect(out.ok).toBe(false);
     if (!out.ok) expect(out.status).toBe(0);
   });

@@ -25,7 +25,7 @@ export function prepareSubmission(text: string): Submission {
   return { kind: "send", documentText: text };
 }
 
-type FetchLike = Parameters<typeof requestAnalysis>[2];
+type FetchLike = Parameters<typeof requestAnalysis>[1];
 
 export type SubmitOutcome = { kind: "refused"; reason: RefusalReason } | AnalyzeOutcome;
 
@@ -37,10 +37,10 @@ export type SubmitOutcome = { kind: "refused"; reason: RefusalReason } | Analyze
  */
 export async function submitDocument(
   text: string,
-  options: { redLines?: string[]; doFetch?: FetchLike; onSend?: () => void } = {},
+  options: { doFetch?: FetchLike; onSend?: () => void } = {},
 ): Promise<SubmitOutcome> {
   const prepared = prepareSubmission(text);
   if (prepared.kind === "refused") return prepared;
   options.onSend?.();
-  return requestAnalysis(prepared.documentText, options.redLines ?? [], options.doFetch);
+  return requestAnalysis(prepared.documentText, options.doFetch);
 }

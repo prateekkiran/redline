@@ -38,6 +38,7 @@ export default async function SavedDocumentPage({ params }: Props) {
         documentText={saved.documentText}
         result={saved.result}
         source={t.saved.source(savedOn(saved.createdAt))}
+        readWith={t.saved.readWith(saved.redLines)}
         actions={
           <>
             <Link href="/library" className={l.back}>
