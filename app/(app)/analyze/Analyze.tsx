@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import type { AnalysisResult } from "@/lib/analysis";
+import type { SaveStatus } from "@/lib/library/save-status";
 import s from "./analyze.module.css";
 import { copy, refusal } from "./copy";
 import { submitDocument } from "./prepare";
@@ -12,7 +14,13 @@ type Phase =
   | { kind: "input" }
   | { kind: "extracting"; fileName: string }
   | { kind: "analyzing"; fromPdf: boolean }
-  | { kind: "result"; documentText: string; result: AnalysisResult; source: string };
+  | {
+      kind: "result";
+      documentText: string;
+      result: AnalysisResult;
+      source: string;
+      save: SaveStatus;
+    };
 
 /**
  * Add a document, then read the result. The PDF is parsed here, in the
@@ -37,7 +45,7 @@ export function Analyze() {
       setPhase({ kind: "input" });
       setError(refusal[outcome.reason]);
     } else if (outcome.ok) {
-      setPhase({ kind: "result", documentText, result: outcome.result, source });
+      setPhase({ kind: "result", documentText, result: outcome.result, source, save: outcome.save });
     } else {
       setPhase({ kind: "input" });
       setError(outcome.message);
@@ -71,6 +79,7 @@ export function Analyze() {
         documentText={phase.documentText}
         result={phase.result}
         source={phase.source}
+        saveNote={saveNote(phase.save)}
         onReset={() => {
           setPasted("");
           setPhase({ kind: "input" });
@@ -147,4 +156,22 @@ export function Analyze() {
       )}
     </div>
   );
+}
+
+function saveNote(save: SaveStatus) {
+  if (save.saved) {
+    return {
+      tone: "quiet" as const,
+      text: (
+        <>
+          {copy.save.savedBefore}
+          <Link href={`/library/${save.documentId}`}>{copy.save.savedLink}</Link>
+          {copy.save.savedAfter}
+        </>
+      ),
+    };
+  }
+  return save.reason === "accounts not set up"
+    ? { tone: "quiet" as const, text: copy.save.notConfigured }
+    : { tone: "plain" as const, text: copy.save.failed };
 }

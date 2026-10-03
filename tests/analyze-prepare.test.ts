@@ -89,6 +89,11 @@ describe("submitDocument", () => {
     });
     expect(calls).toHaveLength(1);
     expect(order).toEqual(["send", "fetch"]);
-    expect(outcome).toEqual({ ok: true, result: { summary: "A deal.", flags: [] } });
+    expect(outcome).toEqual({
+      ok: true,
+      result: { summary: "A deal.", flags: [] },
+      // The fake server says nothing about saving, so the screen mustn't claim a save.
+      save: { saved: false, reason: "save failed" },
+    });
   });
 });

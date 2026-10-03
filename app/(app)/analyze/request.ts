@@ -5,11 +5,12 @@
  */
 
 import type { AnalysisResult } from "@/lib/analysis";
+import { readSaveStatus, type SaveStatus } from "@/lib/library/save-status";
 
 export const ANALYZE_ENDPOINT = "/api/analyze";
 
 export type AnalyzeOutcome =
-  | { ok: true; result: AnalysisResult }
+  | { ok: true; result: AnalysisResult; save: SaveStatus }
   | { ok: false; status: number; message: string };
 
 type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
@@ -31,7 +32,13 @@ export async function requestAnalysis(
   }
 
   const body: unknown = await res.json().catch(() => undefined);
-  if (res.ok && isResult(body)) return { ok: true, result: body };
+  if (res.ok && isResult(body)) {
+    return {
+      ok: true,
+      result: { summary: body.summary, flags: body.flags },
+      save: readSaveStatus(body),
+    };
+  }
 
   const message =
     body && typeof body === "object" && typeof (body as { error?: unknown }).error === "string"

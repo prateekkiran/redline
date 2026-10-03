@@ -1,0 +1,160 @@
+/* The library: a contents page. Entries are divided by hairlines; no cards. */
+
+.notice {
+  margin-top: 24px;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.contents {
+  margin-top: 32px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ink);
+}
+
+.entry {
+  border-bottom: 1px solid var(--rule);
+}
+
+.entryLink {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 24px;
+  align-items: baseline;
+  padding: 16px 0 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.entryTitle {
+  font-size: 19px;
+  line-height: 1.3;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.22em;
+  overflow-wrap: anywhere;
+}
+
+.entryLink:hover .entryTitle {
+  text-decoration-color: var(--ink);
+}
+
+.entryLink:focus-visible {
+  outline: 2px solid var(--rubric);
+  outline-offset: 3px;
+}
+
+.entryMeta {
+  display: flex;
+  gap: 18px;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* Footer controls on a saved document: a link back, and delete. */
+
+.back {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.back:hover,
+.textButton:hover:not(:disabled) {
+  text-decoration-thickness: 2px;
+}
+
+.back:focus-visible,
+.textButton:focus-visible,
+.action:focus-visible,
+.confirmQuestion:focus-visible {
+  outline: 2px solid var(--rubric);
+  outline-offset: 3px;
+}
+
+.textButton {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+}
+
+.confirm {
+  flex: 1 1 100%;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.confirmQuestion {
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.confirmDetail {
+  margin-top: 6px;
+  max-width: 36em;
+}
+
+.confirmError {
+  margin-top: 12px;
+  max-width: 36em;
+  font-family: var(--sans);
+  font-size: 14.5px;
+}
+
+.confirmActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 28px;
+  margin-top: 16px;
+}
+
+.action {
+  display: inline-block;
+  padding: 15px 24px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--page);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 160ms linear;
+}
+
+.action:hover:not(:disabled) {
+  background: var(--cloth);
+}
+
+.action:disabled,
+.textButton:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+@media (max-width: 599px) {
+  .entryLink {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

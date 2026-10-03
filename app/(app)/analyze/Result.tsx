@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import type { AnalysisResult, Flag } from "@/lib/analysis";
 import { documentLines } from "@/lib/document/lines";
 import { placeFlags, segmentLine, type Mark } from "@/lib/document/marks";
@@ -14,7 +15,14 @@ type Props = {
   result: AnalysisResult;
   /** Where the text came from: a PDF's name and page count, or a paste. */
   source: string;
-  onReset: () => void;
+  /**
+   * Whether this result is in the library. "unsaved" is said plainly near
+   * the top, since leaving the page loses it; the rest sit in the footer.
+   */
+  saveNote?: { tone: "quiet" | "plain"; text: ReactNode };
+  /** Footer controls. The document screen passes none and gets "Read another". */
+  actions?: ReactNode;
+  onReset?: () => void;
 };
 
 const WIDE = "(min-width: 900px)";
@@ -32,7 +40,7 @@ const COPIED_FOR_MS = 2500;
  * being read turns its sentence rubric. Below 900px the margin folds in and
  * each gloss sits beneath the line where its sentence ends.
  */
-export function Result({ documentText, result, source, onReset }: Props) {
+export function Result({ documentText, result, source, saveNote, actions, onReset }: Props) {
   const lines = useMemo(() => documentLines(documentText), [documentText]);
   const marks = useMemo(
     () => placeFlags(documentText, lines, result.flags),
@@ -209,6 +217,11 @@ export function Result({ documentText, result, source, onReset }: Props) {
     <article className={s.result}>
       <section className={s.text} aria-labelledby="summary-heading">
         <p className={s.reference}>{source}</p>
+        {saveNote?.tone === "plain" && (
+          <p className={s.unsaved} role="status">
+            {saveNote.text}
+          </p>
+        )}
         <h1 id="summary-heading" className={s.title}>
           {copy.summaryHeading}
         </h1>
@@ -296,11 +309,18 @@ export function Result({ documentText, result, source, onReset }: Props) {
 
       <footer className={`${s.text} ${s.footer}`}>
         {clean && <p className={s.cleanFootnote}>{copy.clean.footnote}</p>}
+        {saveNote?.tone === "quiet" && (
+          <p className={s.saveNote} role="status">
+            {saveNote.text}
+          </p>
+        )}
         <p className={s.footerLine}>{copy.footer}</p>
         <div className={s.apparatus}>
-          <button type="button" className={s.action} onClick={onReset}>
-            {copy.reset}
-          </button>
+          {actions ?? (
+            <button type="button" className={s.action} onClick={onReset}>
+              {copy.reset}
+            </button>
+          )}
         </div>
       </footer>
     </article>

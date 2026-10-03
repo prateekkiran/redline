@@ -32,11 +32,27 @@ describe("requestAnalysis", () => {
     expect(body.redLines).toEqual(["No non-competes"]);
   });
 
-  it("returns the result on success", async () => {
-    const { fn } = fakeFetch(200, { summary: "A website deal.", flags: [] });
+  it("returns the result on success, with whether it was saved", async () => {
+    const { fn } = fakeFetch(200, {
+      summary: "A website deal.",
+      flags: [],
+      saved: true,
+      documentId: "6f1c1d0e-1a2b-4c3d-8e9f-0a1b2c3d4e5f",
+    });
     await expect(requestAnalysis("Some text.", [], fn)).resolves.toEqual({
       ok: true,
       result: { summary: "A website deal.", flags: [] },
+      save: { saved: true, documentId: "6f1c1d0e-1a2b-4c3d-8e9f-0a1b2c3d4e5f" },
+    });
+  });
+
+  it("reports a failed save without losing the result", async () => {
+    const { fn } = fakeFetch(200, { summary: "A website deal.", flags: [], saved: false, reason: "save failed" });
+    const outcome = await requestAnalysis("Some text.", [], fn);
+    expect(outcome).toEqual({
+      ok: true,
+      result: { summary: "A website deal.", flags: [] },
+      save: { saved: false, reason: "save failed" },
     });
   });
 

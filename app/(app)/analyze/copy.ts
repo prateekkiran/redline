@@ -69,6 +69,14 @@ export const copy = {
     declined: "The document doesn’t say. Redline only answers from what’s written in it.",
     remaining: (n: number) => (n === 1 ? "1 character left" : `${n} characters left`),
   },
+  save: {
+    savedBefore: "Saved to ",
+    savedLink: "your library",
+    savedAfter: ".",
+    notConfigured: "Not saved. Accounts aren’t set up on this copy of Redline, so there’s no library to keep it in.",
+    failed:
+      "This wasn’t saved to your library. It’s all on this page, but it’ll be gone once you leave, so copy any counter-offer you need first.",
+  },
   clean: {
     note: "No flags. Redline found no clause in this document that reaches past the job.",
     footnote: "Redline can miss a clause. No flags doesn’t mean the contract is fair, or that you should sign it.",

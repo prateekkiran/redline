@@ -77,6 +77,9 @@ describe("POST /api/analyze", () => {
     expect(await res.json()).toEqual({
       summary: "A website build for a home goods seller.",
       flags: [],
+      // No Supabase project, so nothing is saved, and the reader is told why.
+      saved: false,
+      reason: "accounts not set up",
     });
     // Only the document text crossed to OpenRouter, inside a JSON body.
     const sent = JSON.parse(String(fetchSpy.mock.calls[0][1].body));
