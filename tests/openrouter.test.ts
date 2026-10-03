@@ -3,6 +3,7 @@ import {
   createOpenRouterClient,
   ModelCallError,
   OPENROUTER_URL,
+  parseProviders,
 } from "@/lib/analysis/openrouter";
 
 const KEY = "sk-or-test-key-123";
@@ -35,6 +36,7 @@ function chat(content: string) {
 beforeEach(() => {
   vi.stubEnv("OPENROUTER_API_KEY", KEY);
   vi.stubEnv("OPENROUTER_MODEL", "vendor/model-from-env");
+  vi.stubEnv("OPENROUTER_PROVIDER", "provider-from-env");
 });
 
 afterEach(() => {
@@ -58,7 +60,7 @@ describe("createOpenRouterClient request", () => {
     const body = JSON.parse(String(calls[0].init.body));
     expect(body.model).toBe("vendor/model-from-env");
     expect(body.provider).toEqual({
-      order: ["fireworks"],
+      order: ["provider-from-env"],
       allow_fallbacks: false,
       require_parameters: true,
       data_collection: "deny",
@@ -82,6 +84,15 @@ describe("createOpenRouterClient request", () => {
     vi.stubEnv("OPENROUTER_MODEL", "other/model");
     await client.completeJson(args);
     expect(JSON.parse(String(calls[1].init.body)).model).toBe("other/model");
+  });
+
+  it("pins every provider listed in OPENROUTER_PROVIDER, in order", async () => {
+    vi.stubEnv("OPENROUTER_PROVIDER", " ModelRun, deepinfra ,");
+    const { fn, calls } = fakeFetch(200, chat('{"ok":true}'));
+    await createOpenRouterClient({ fetch: fn }).completeJson(args);
+    const body = JSON.parse(String(calls[0].init.body));
+    expect(body.provider.order).toEqual(["modelrun", "deepinfra"]);
+    expect(body.provider.allow_fallbacks).toBe(false);
   });
 
   it("accepts JSON wrapped in a code fence", async () => {
@@ -108,6 +119,21 @@ describe("createOpenRouterClient errors", () => {
       /OPENROUTER_MODEL is not set/,
     );
     expect(calls).toHaveLength(0);
+  });
+
+  it("fails clearly without a provider, before any request, so nothing goes out unpinned", async () => {
+    vi.stubEnv("OPENROUTER_PROVIDER", " , ");
+    const { fn, calls } = fakeFetch(200, chat("{}"));
+    await expect(createOpenRouterClient({ fetch: fn }).completeJson(args)).rejects.toThrow(
+      /OPENROUTER_PROVIDER is not set/,
+    );
+    expect(calls).toHaveLength(0);
+  });
+
+  it("parses the provider list", () => {
+    expect(parseProviders(undefined)).toEqual([]);
+    expect(parseProviders("fireworks")).toEqual(["fireworks"]);
+    expect(parseProviders("A,,b ")).toEqual(["a", "b"]);
   });
 
   it("surfaces status and provider message on non-2xx, without the key", async () => {

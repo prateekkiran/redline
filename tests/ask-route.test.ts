@@ -28,6 +28,7 @@ beforeEach(() => {
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "");
   vi.stubEnv("OPENROUTER_API_KEY", KEY);
   vi.stubEnv("OPENROUTER_MODEL", "vendor/model");
+  vi.stubEnv("OPENROUTER_PROVIDER", "vendor-provider");
   fetchSpy = vi.fn();
   vi.stubGlobal("fetch", fetchSpy);
   vi.spyOn(console, "error").mockImplementation(() => {});

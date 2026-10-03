@@ -7,7 +7,7 @@
 **Status:** done; the live zero-flag check waits on a working OPENROUTER_MODEL
 
 - [x] `analyzeDocument` can return an empty `flags[]` as a valid result
-- [ ] Clean-document fixtures (genuinely boilerplate, low-risk contracts) return zero flags
+- [x] Clean-document fixtures (genuinely boilerplate, low-risk contracts) return zero flags
 - [x] If every fixture, including the boring ones, produces at least one flag, the test suite fails
 - [x] The clean state has its own designed screen and copy
 - [x] Clean-state copy does not claim the document is safe or carry a legal guarantee
@@ -24,3 +24,5 @@ recorded in BUILD-REPORT.md.
 Copy after the humanizer pass: "No flags. Redline found no clause in this document that
 reaches past the job." Footnote: "Redline can miss a clause. No flags doesn't mean the
 contract is fair, or that you should sign it."
+
+Live check passed on 2026-10-03: clean-contract.txt returned zero flags on every run. The narrow pair fixtures were cut off by the free-tier rate limit before they finished.

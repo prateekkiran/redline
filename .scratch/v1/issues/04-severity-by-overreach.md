@@ -11,7 +11,7 @@ Non-compete, auto-renewal, and termination-for-convenience have not been individ
 **Status:** built; the three model-judgement checks wait on a working OPENROUTER_MODEL (`pnpm test:live`)
 
 - [ ] Paired fixtures: in-scope IP assignment (covers the paid deliverable) vs. overreaching IP assignment (reaches into future work / other clients / the freelancer's own tools) — the overreaching one scores higher, every run
-- [ ] Paired fixtures: narrow arbitration (this contract's disputes) vs. broad ("any and all claims however arising") — the broad one scores higher, every run
+- [x] Paired fixtures: narrow arbitration (this contract's disputes) vs. broad ("any and all claims however arising") — the broad one scores higher, every run
 - [x] Each of the six categories has at least one fixture that produces a flag in that category
 - [ ] Fixture set built from the clause types in `research/summary.md`; false negatives are what get driven down — extra borderline flags are not on their own a failure
 - [ ] Flag descriptions contain no hedging ("may", "possibly", "might")
@@ -58,3 +58,5 @@ ambiguous calls written up above. Not ticked: the two "every run" pair checks, t
 false-negative check and the no-hedging check. Only a real model can show those, and
 they live in `tests/live/severity.test.ts`. Today they fail at the model 404 recorded in
 BUILD-REPORT.md.
+
+Live, 2026-10-03: broad arbitration outranked narrow on every run. The IP pair, the six-category coverage and the no-hedging check were cut off by the free-tier rate limit. One smoke run found all six categories, but 2 of its 7 descriptions were hedged.

@@ -2,8 +2,8 @@
  * The one OpenRouter client. Every model call in Redline goes through here;
  * nothing else talks to a model, and nothing talks to a provider's own API.
  *
- * Privacy rests on the `provider` block below: requests are pinned to a
- * single provider with fallbacks off, `data_collection: "deny"` (only
+ * Privacy rests on the `provider` block below: requests are pinned to the
+ * providers named in OPENROUTER_PROVIDER with fallbacks off, `data_collection: "deny"` (only
  * providers that don't store or train on user data) and `zdr: true` (only
  * endpoints with a Zero Data Retention policy). The landing page's privacy statement depends on it, so it is set
  * once, here, and not per call site.
@@ -11,8 +11,10 @@
 
 export const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+// The provider list comes from OPENROUTER_PROVIDER (comma-separated, in
+// order), because which providers serve a model changes with the model.
+// These flags don't: they are the privacy guarantee and stay in code.
 export const PROVIDER_ROUTING = {
-  order: ["fireworks"],
   allow_fallbacks: false,
   require_parameters: true,
   data_collection: "deny",
@@ -20,6 +22,14 @@ export const PROVIDER_ROUTING = {
   // Retention policy (OpenRouter provider-routing docs, checked 2026-10-02).
   zdr: true,
 } as const;
+
+/** "modelrun, deepinfra" → ["modelrun", "deepinfra"]; blanks dropped. */
+export function parseProviders(value: string | undefined): string[] {
+  return (value ?? "")
+    .split(",")
+    .map((p) => p.trim().toLowerCase())
+    .filter(Boolean);
+}
 
 export const REASONING = { effort: "low" } as const;
 
@@ -64,6 +74,7 @@ export function createOpenRouterClient(
       const env = options.env ?? process.env;
       const apiKey = env.OPENROUTER_API_KEY?.trim();
       const model = env.OPENROUTER_MODEL?.trim();
+      const providers = parseProviders(env.OPENROUTER_PROVIDER);
       if (!apiKey) {
         throw new ModelCallError(
           "OPENROUTER_API_KEY is not set. Add it to .env.local (or the deployment's environment).",
@@ -74,6 +85,11 @@ export function createOpenRouterClient(
           "OPENROUTER_MODEL is not set. Add the OpenRouter model id to .env.local (or the deployment's environment).",
         );
       }
+      if (providers.length === 0) {
+        throw new ModelCallError(
+          "OPENROUTER_PROVIDER is not set. Add the provider slug(s) that serve OPENROUTER_MODEL, comma-separated (e.g. modelrun), to .env.local (or the deployment's environment).",
+        );
+      }
 
       const body = {
         model,
@@ -81,7 +97,7 @@ export function createOpenRouterClient(
           { role: "system", content: args.system },
           { role: "user", content: args.user },
         ],
-        provider: PROVIDER_ROUTING,
+        provider: { order: providers, ...PROVIDER_ROUTING },
         reasoning: REASONING,
         response_format: {
           type: "json_schema",

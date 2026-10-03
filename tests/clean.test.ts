@@ -25,7 +25,7 @@ import {
   type StubOptions,
 } from "./support/stub-model";
 
-const ENV = { OPENROUTER_API_KEY: "test-key", OPENROUTER_MODEL: "test/model" };
+const ENV = { OPENROUTER_API_KEY: "test-key", OPENROUTER_MODEL: "test/model", OPENROUTER_PROVIDER: "test-provider" };
 
 /**
  * A fetch that plays OpenRouter: it reads the request body the real client

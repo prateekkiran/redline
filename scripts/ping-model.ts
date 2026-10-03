@@ -25,6 +25,7 @@ const schema = {
 
 async function main() {
   console.log(`Model: ${process.env.OPENROUTER_MODEL || "(OPENROUTER_MODEL not set)"}`);
+  console.log(`Provider: ${process.env.OPENROUTER_PROVIDER || "(OPENROUTER_PROVIDER not set)"}`);
   const client = createOpenRouterClient();
   const out = await client.completeJson<{ reply: string; model_followed_schema: boolean }>({
     system: "You answer health checks. Reply with JSON only.",

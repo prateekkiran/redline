@@ -21,6 +21,7 @@ async function main() {
   const fixture = path.resolve(process.cwd(), "tests/fixtures/adhesion-contract.txt");
   const text = readFileSync(fixture, "utf8");
   console.log(`Model: ${process.env.OPENROUTER_MODEL || "(OPENROUTER_MODEL not set)"}`);
+  console.log(`Provider: ${process.env.OPENROUTER_PROVIDER || "(OPENROUTER_PROVIDER not set)"}`);
   console.log(`Document: ${path.relative(process.cwd(), fixture)} (${text.length} characters)\n`);
 
   let diagnostics: FlagDiagnostics | undefined;

@@ -28,12 +28,25 @@ only because the configured model can't be reached (decision 8).
 
 - `npm run build` passes, with no Supabase variables set.
 - `npm test`: 31 files, 352 tests, all pass, no key needed.
-- `npm run smoke` exists and runs the fixture contract through the real pipeline. Against the
-  real model it exits 1 with
-  `ModelCallError: OpenRouter returned 404: This model is unavailable for free. The paid version is available now - use this slug instead: qwen/qwen3.8-27b`.
-  **OPENROUTER_API_KEY is set, but no flags came back, so none survived verification.**
-  The model is never reached. That's not a pipeline failure.
-- `pnpm test:live`: 5 files, 11 tests, all failing on that same 404.
+- `npm run smoke` against the real model (qwen/qwen3.8-27b:free through ModelRun) **passes**.
+  The model proposed 7 candidate flags and all 7 passed verification, none dropped.
+  Every source sentence is an exact substring. It found all six planted categories
+  (liability/indemnity, IP, non-compete, arbitration, auto-renewal,
+  termination-for-convenience), plus the jury and class-action waiver as a second
+  arbitration flag. Every flag came with a counter-offer, and none needed the follow-up call.
+  **2 of the 7 descriptions contained a hedge word.** They were kept, as designed, but that
+  breaks ADR 0004's "no hedging" for this model. The prompt needs tightening, or the model
+  needs changing.
+- `pnpm test:live`, run against the real model. **Passed:** counter-offers (present, distinct,
+  each tied to its own clause), red-line monotonicity, Q&A (answers are grounded, and
+  unanswerable questions are declined), the clean contract returning zero flags on every
+  run, and broad arbitration outranking narrow on every run. **Not yet run to completion**,
+  because of free-tier rate limits rather than wrong answers: the IP pair, the narrow pair
+  fixtures returning no flag, all six categories found on every run, and the no-hedging
+  check. The first attempt ran the files in parallel and hit
+  `429 free-models-per-min`. The rerun hit `429 free-models-per-day. Add 10 credits to
+  unlock 1000 free model requests per day`. `test:live` now runs files one at a time.
+  Rerun it tomorrow, or after adding credits.
 - `next start` with no Supabase variables serves `/`, `/analyze`, `/library`, `/red-lines` and
   `/sign-in` (200). A JSON post to `/api/analyze` reaches OpenRouter and comes back as a plain
   502 ("Redline couldn't read this document just now."). A multipart file post is refused
@@ -74,14 +87,15 @@ only because the configured model can't be reached (decision 8).
 7. **Committed the pending `.gitignore` and `.vercelignore` changes first.** They were
    uncommitted at the start and only keep env files and working folders out of
    git and Vercel uploads. `.claude/` stays untracked.
-8. **The configured model can't be reached, and I didn't work around it.** `OPENROUTER_MODEL`
-   is `qwen/qwen3.8-27b:free`. OpenRouter answers
-   `404: This model is unavailable for free. The paid version is available now - use this slug instead: qwen/qwen3.8-27b`.
-   With the paid slug, the provider pin removes every endpoint
-   (`404: No endpoints found for qwen/qwen3.8-27b. Every candidate endpoint was removed during routing ...`),
-   because Fireworks doesn't host that model. Both choices belong to you: change the model to one
-   Fireworks serves, or change the pinned provider. The code and tests don't depend on
-   either.
+8. **Corrected on 2026-10-03: the model was fine, but the provider pin wasn't.** The first
+   version of this report blamed the model. That was wrong. `qwen/qwen3.8-27b:free` is
+   served by exactly one provider, ModelRun. The code pinned Fireworks with fallbacks off,
+   so OpenRouter had no endpoint left and returned a misleading "unavailable for free" 404.
+   The provider list now comes from **`OPENROUTER_PROVIDER`** (comma-separated, required),
+   next to `OPENROUTER_MODEL`. A request without it fails before anything is sent, so no call
+   goes out unpinned. The privacy flags (`allow_fallbacks: false`,
+   `require_parameters: true`, `data_collection: "deny"`, `zdr: true`) stay in code.
+   ModelRun passes all of them. `.env.local` now has `OPENROUTER_PROVIDER=modelrun`.
 9. **Sign-up confirms by email.** When Supabase has email confirmation turned on, sign-up shows
    "check your email" and `/auth/callback` finishes the sign-in. Passwords need at least
    8 characters. I picked that minimum myself; the spec doesn't set one.
@@ -128,12 +142,9 @@ Without a Supabase project:
   lines;
 - sign-in on the deployed Vercel URL.
 
-Without a working model:
-- any real analysis: summary quality, whether the model finds all six planted clauses,
-  severity pairs, the clean result, counter-offer quality, Q&A declines, red-line
-  monotonicity;
-- whether Fireworks with `zdr: true` and `data_collection: "deny"` accepts the model you pick.
-  If it removes every endpoint, either the pin or the model has to change, and that's your call.
+Not yet checked against the real model (blocked by the daily free quota, see above):
+- the IP severity pair, the narrow pair fixtures returning no flag, all six categories on
+  every run, and the no-hedging check. The one smoke run already shows 2 hedged descriptions.
 
 Other gaps:
 - The landing page sample is still hand-written. The PRD needs real `analyzeDocument` output
@@ -144,8 +155,8 @@ Other gaps:
 ## What to run first
 
 ```sh
-# 1. Point the model at one Fireworks serves (or change the provider pin in lib/analysis/openrouter.ts)
-#    Edit OPENROUTER_MODEL in .env.local, then:
+# 1. The model works. OPENROUTER_PROVIDER must name a provider that serves OPENROUTER_MODEL
+#    (check https://openrouter.ai/api/v1/models/<model>/endpoints). Then:
 pnpm exec tsx scripts/ping-model.ts      # one structured call; prints JSON or the exact error
 pnpm smoke                               # fixture contract end to end; flags + "N verified"
 pnpm test:live                           # severity pairs, clean, counter-offers, Q&A, red lines
@@ -162,6 +173,6 @@ pnpm exec tsx scripts/check-library.ts <email> <password>   # repository round t
 pnpm test && pnpm build
 ```
 
-For the deployed site, add the same four variables in Vercel (`vercel env add`). The site
+For the deployed site, add the same five variables (including `OPENROUTER_PROVIDER`) in Vercel (`vercel env add`). The site
 deploys from main on every push, so this push deploys the build. Until the variables are
 set, the live analysis endpoint returns a plain error.
