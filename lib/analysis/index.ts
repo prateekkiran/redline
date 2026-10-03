@@ -6,8 +6,13 @@
 
 import { checkDocumentText, MAX_DOCUMENT_CHARS } from "./limits";
 import { createOpenRouterClient, ModelCallError, type ModelClient } from "./openrouter";
-import { buildFlags, readCandidateList, type FlagDiagnostics } from "./flags";
+import { buildFlags, countHedged, readCandidateList, type FlagDiagnostics } from "./flags";
+import { ensureCounterOffers } from "./counter-offers";
 import {
+  COUNTER_OFFERS_SCHEMA,
+  COUNTER_OFFERS_SCHEMA_NAME,
+  COUNTER_OFFERS_SYSTEM,
+  counterOffersUserMessage,
   FLAGS_SCHEMA,
   FLAGS_SCHEMA_NAME,
   FLAGS_SYSTEM,
@@ -116,7 +121,25 @@ async function detectFlags(
   if (!candidates) {
     throw new AnalysisOutputError("The model's flag list was missing.");
   }
-  const { flags, diagnostics } = buildFlags(documentText, candidates);
+  const built = buildFlags(documentText, candidates);
+  // Every flag ships with a counter-offer (ticket 06). Flags without one get
+  // one follow-up call for just those clauses; any still without one are
+  // dropped. Code never writes a counter-offer.
+  const { flags, followUp, missing } = await ensureCounterOffers(built.flags, (clauses) =>
+    client.completeJson<unknown>({
+      system: COUNTER_OFFERS_SYSTEM,
+      user: counterOffersUserMessage(documentText, clauses),
+      schemaName: COUNTER_OFFERS_SCHEMA_NAME,
+      schema: COUNTER_OFFERS_SCHEMA,
+    }),
+  );
+  const diagnostics: FlagDiagnostics = {
+    ...built.diagnostics,
+    counterOfferFollowUp: followUp,
+    missingCounterOffer: missing,
+    hedged: countHedged(flags),
+    kept: flags.length,
+  };
   return {
     flags: flags.map((f) => ({
       sourceSentence: f.sourceSentence,

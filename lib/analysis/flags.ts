@@ -41,6 +41,13 @@ export type FlagDiagnostics = CitationDrops & {
   withinDeal: number;
   /** Returned flags whose description contains a hedge word (kept anyway). */
   hedged: number;
+  /**
+   * Flags that came back without a usable counter-offer and were sent to
+   * the one follow-up call (./counter-offers).
+   */
+  counterOfferFollowUp: number;
+  /** Flags dropped because the follow-up still gave no usable counter-offer. */
+  missingCounterOffer: number;
   /** Flags returned after every check. */
   kept: number;
 };
@@ -128,8 +135,15 @@ export function buildFlags(
       malformed,
       withinDeal,
       ...dropped,
-      hedged: flags.filter((f) => findHedges(f.description).length > 0).length,
+      hedged: countHedged(flags),
+      counterOfferFollowUp: 0,
+      missingCounterOffer: 0,
       kept: flags.length,
     },
   };
+}
+
+/** How many flags have a hedge word in their description. */
+export function countHedged(flags: { description: string }[]): number {
+  return flags.filter((f) => findHedges(f.description).length > 0).length;
 }

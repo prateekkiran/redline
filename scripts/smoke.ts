@@ -46,7 +46,8 @@ async function main() {
       `Model proposed ${d.proposed} candidate flags; ${d.kept} survived verification ` +
         `(dropped: ${d.notInDocument} not in document, ${d.tooShort} too short, ` +
         `${d.duplicate} duplicate, ${d.malformed} malformed, ${d.withinDeal} inside the deal); ` +
-        `${d.hedged} hedged descriptions.`,
+        `${d.hedged} hedged descriptions; ${d.counterOfferFollowUp} needed a counter-offer ` +
+        `follow-up, ${d.missingCounterOffer} dropped without one.`,
     );
   }
   if (verified !== n) {

@@ -10,6 +10,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { CompleteJsonArgs, ModelClient } from "@/lib/analysis/openrouter";
 import {
+  COUNTER_OFFERS_SCHEMA_NAME,
   FLAGS_SCHEMA_NAME,
   SUMMARY_SCHEMA_NAME,
 } from "@/lib/analysis/prompts";
@@ -67,6 +68,11 @@ export type StubOptions = {
   extraCandidates?: unknown[];
   /** Use these candidates instead of the sidecar's. */
   candidates?: unknown[];
+  /**
+   * The follow-up counter-offer call answers every clause with "" (the
+   * model failing to draft one), instead of the sidecar's counter-offer.
+   */
+  emptyCounterOffers?: boolean;
 };
 
 export function createStubModel(fixture: Fixture, options: StubOptions = {}): StubModel {
@@ -86,6 +92,15 @@ export function createStubModel(fixture: Fixture, options: StubOptions = {}): St
               ...(options.candidates ?? candidatesFromSidecar(fixture)),
               ...(options.extraCandidates ?? []),
             ],
+          } as T;
+        case COUNTER_OFFERS_SCHEMA_NAME:
+          return {
+            counterOffers: sentencesAsked(args.user).map((sentence) => ({
+              sourceSentence: sentence,
+              counterOffer: options.emptyCounterOffers
+                ? ""
+                : (fixture.sidecar.flags.find((f) => f.sentence === sentence)?.counterOffer ?? ""),
+            })),
           } as T;
         default:
           throw new Error(`Stub model has no reply for schema "${args.schemaName}"`);
@@ -149,4 +164,9 @@ export function candidatesFromSidecar({ name, sidecar }: Fixture): StubCandidate
       counterOffer: f.counterOffer,
     };
   });
+}
+
+/** The clause sentences a counter-offer follow-up request asks about. */
+export function sentencesAsked(user: string): string[] {
+  return [...user.matchAll(/<sentence>([\s\S]*?)<\/sentence>/g)].map((m) => m[1]);
 }
