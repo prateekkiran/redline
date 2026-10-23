@@ -6,7 +6,7 @@ The red lines in effect at analysis time are added to each saved entry by ticket
 
 **Blocked by:** 02 (Tracer bullet — upload a contract, get a plain-English summary)
 
-**Status:** done in code; nothing has run against a real Supabase project yet
+**Status:** done, and checked against the live Supabase project (2026-10-23)
 
 - [x] Running an analysis saves it to the signed-in user's library
 - [x] The library lists the user's past documents
@@ -24,6 +24,17 @@ Row-level security limits select, insert and delete to the owner. There's no upd
 signed-out visitors get no access, and deleting an account deletes its documents. The
 policies are checked against real Postgres (PGlite) in `pnpm test`, under a small shim for
 `auth.uid()`. The repository-layer write, read-back and delete tests run there too.
-The supabase-js calls and the screens haven't touched a live project. Once the migration
-is applied, run `pnpm exec tsx scripts/check-library.ts <email> <password>`.
 A failed save never loses the analysis: the screen says it wasn't saved.
+
+Checked against the live project on 2026-10-23. `pnpm exec tsx scripts/check-library.ts
+<email> <password>` passes: the document saves, appears in the list as the newest entry
+with the right flag count and title, reads back with matching text, summary, flags and
+red lines, and deletes for good. `scripts/check-rls-isolation.ts` passes too: a second
+signed-in user can neither read, change nor delete the first user's rows, an anonymous
+client sees nothing, and a user cannot save a row as somebody else.
+
+The schema was applied to the project as SQL before the Supabase CLI was linked, so the
+CLI's migration history had no record of it and `supabase db push` wanted to apply the
+same schema twice. `supabase/migrations/20261022122015_record_existing_schema_in_migration_ledger.sql`
+writes that history and changes nothing else; `supabase db push --dry-run` now reports
+the database as up to date.

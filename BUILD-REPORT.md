@@ -3,11 +3,11 @@
 Unattended build of Redline v1 from the tickets in `.scratch/v1/issues/`.
 This file is written as the build runs; the final sections are filled in at the end.
 
-## Next step (handoff, 2026-10-03)
+## Next step (handoff, 2026-10-23)
 
 Start here. Everything is committed and pushed to `main`.
 
-1. **Finish the live checks.** The model works (`OPENROUTER_MODEL=qwen/qwen3.8-27b:free`,
+1. **Finish the live model checks.** The model works (`OPENROUTER_MODEL=qwen/qwen3.8-27b:free`,
    `OPENROUTER_PROVIDER=modelrun`, both in `.env.local`). The run stopped on the free tier's
    daily limit, not on a failure. Once the limit has reset (or after adding $10 of OpenRouter
    credit), run:
@@ -17,15 +17,50 @@ Start here. Everything is committed and pushed to `main`.
    ```
    If hedging survives the tightened prompt (`lib/analysis/prompts.ts`), change the model. If
    a live check fails on substance, fix it and tick that box in its ticket.
-2. **Create the Supabase project.** Add `NEXT_PUBLIC_SUPABASE_URL` and
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY` to `.env.local`. Run the two migrations in
-   `supabase/migrations/` in order. Then `pnpm dev`: sign up, analyse, and check `/library`
-   and `/red-lines`. After that, run `pnpm exec tsx scripts/check-library.ts <email> <password>`.
-3. **Set the five variables on Vercel** (`OPENROUTER_API_KEY`, `OPENROUTER_MODEL`,
-   `OPENROUTER_PROVIDER`, and the two Supabase ones) with `vercel env add`. Then redeploy.
+2. **Decide what to do about Vercel's SSO protection on the production deployment.**
+   The project has `ssoProtection: all_except_custom_domains` and no custom domain, so
+   every production URL redirects to a Vercel sign-in page. The public landing page is
+   therefore unreachable by visitors, which the spec says it must not be
+   (`.scratch/v1/spec.md`: "The landing page ships on the default Vercel URL"). Fix it in
+   the Vercel dashboard under Settings → Deployment Protection: either turn protection
+   off, or switch the scope to Standard Protection (which leaves production domains
+   public and protects only preview deployments). Password Protection is not available on
+   Hobby. See "Deployment protection" below.
+3. **Turn on leaked-password protection.** The Supabase advisor flags it as a warning
+   and it can't be set from `supabase/config.toml`, so it has to go through the
+   Management API: `pnpm exec tsx scripts/enable-hibp.ts jzyufoxxaoixtsdzbwwh`.
 4. **Before launch:** swap the landing page's hand-written sample for real
    `analyzeDocument` output, add DOCX to its copy (humanizer pass), and settle CLAUDE.md's
    "credential provisioning" item.
+
+## Supabase project (done, 2026-10-23)
+
+The Supabase project exists and is linked. Project **Redline**,
+ref `jzyufoxxaoixtsdzbwwh`, region `ap-south-1`, in the `Konoha` org.
+
+- The two tables, their row-level security policies, grants, indexes and triggers are
+  applied. `supabase db push --dry-run` reports the database as up to date.
+- `.env.local` and Vercel's Production environment both carry
+  `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, pointing at this project.
+- The Supabase CLI is linked to the project, and `supabase/config.toml` is committed
+  with the remote configuration pulled into it. `supabase config diff` is empty.
+- Auth: email sign-up is on with confirmation off (`mailer_autoconfirm`), so sign-up
+  returns a session directly. The minimum password length is 8, matching the sign-up
+  form's own rule. The redirect allow-list holds the two production hosts and
+  `http://localhost:3000`.
+- The live checks that were waiting on a real project now pass:
+  `scripts/check-library.ts` (save, list, read back, delete) and
+  `scripts/check-rls-isolation.ts` (one user cannot read, change or delete another
+  user's rows; an anonymous client sees nothing; a user cannot save a row as somebody
+  else).
+
+### Deployment protection
+
+The Vercel project has `ssoProtection: {deploymentType: "all_except_custom_domains"}`.
+With no custom domain attached, that protects every production URL: the landing page
+and the app both redirect to `vercel.com/sso-api`. Only
+`redline-seven-chi.vercel.app` currently answers without a Vercel sign-in, and that
+alias is not the project's automatic one.
 
 ## Ticket status
 

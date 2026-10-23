@@ -4,7 +4,7 @@
 
 **Blocked by:** 03 (Cited flags — every flag shows its exact source sentence), 08 (Saved library of past documents)
 
-**Status:** done in code; persistence hasn't run against a real Supabase project yet
+**Status:** done, and checked against the live Supabase project (2026-10-23)
 
 - [x] A signed-in user can add, edit, and remove red lines, and the list persists across sessions
 - [x] The current red lines are passed into `analyzeDocument`
@@ -25,3 +25,9 @@ none of the red lines matched. Limits are 20 red lines of up to 200 characters e
 enforced by the API, the database trigger and the module. The red_lines table's RLS is
 proven on PGlite. A live monotonicity test exists, but it waits on a working
 OPENROUTER_MODEL.
+
+Checked against the live project on 2026-10-23. A red line saves, a duplicate is
+refused, an edit sticks and reads back, and a removal takes it away. The row-level
+security on `red_lines` is proven live by `scripts/check-rls-isolation.ts`: a second
+user can neither read, change nor delete the first user's red lines. Only the
+monotonicity check still waits on the model.
