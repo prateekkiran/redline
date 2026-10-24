@@ -167,9 +167,14 @@ describe("documents table under row-level security", () => {
 
   it("does not let the owner change a saved analysis", async () => {
     const id = await save(as(alice), adhesionInput);
-    await expect(
-      run(as(alice), (tx) => tx.query("update public.documents set summary = 'edited' where id = $1", [id])),
-    ).rejects.toThrow(/permission denied/);
+    // The table grant allows UPDATE, but there is no UPDATE policy on
+    // public.documents, so row-level security denies it: the statement
+    // matches no row, and the summary is left as it was.
+    await run(as(alice), (tx) =>
+      tx.query("update public.documents set summary = 'edited' where id = $1", [id]),
+    );
+    const after = await read(as(alice), id);
+    expect(after?.result.summary).toBe(adhesion.result.summary);
   });
 
   it("deletes a document, its analysis and its red lines for good", async () => {
